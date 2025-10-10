@@ -19,7 +19,7 @@ function determineGiscusTheme() {
   let giscusAttributes = {
     src: "https://giscus.app/client.js",
     "data-repo": "wellska1/clevelandsorcery",
-    "data-repo-id": "",
+    "data-repo-id": "1073812234",
     "data-category": "Comments",
     "data-category-id": "",
     "data-mapping": "title",
