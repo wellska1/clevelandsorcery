@@ -10,23 +10,38 @@ module ExternalPosts
     priority :high
 
     def generate(site)
-      if site.config['external_sources'] != nil
-        site.config['external_sources'].each do |src|
-          puts "Fetching external posts from #{src['name']}:"
-          if src['rss_url']
-            fetch_from_rss(site, src)
-          elsif src['posts']
-            fetch_from_urls(site, src)
-          end
+      sources = site.config['external_sources']
+      return if sources.nil? || !sources.respond_to?(:each)
+
+      sources.each do |src|
+        name = (src['name'] || '').to_s.strip
+        puts "Fetching external posts from #{name}:"
+
+        if present_url?(src['rss_url'])
+          fetch_from_rss(site, src)
+        elsif src['posts'].is_a?(Array)
+          fetch_from_urls(site, src)
+        else
+          # nothing to fetch
+          next
         end
       end
     end
 
     def fetch_from_rss(site, src)
-      xml = HTTParty.get(src['rss_url']).body
-      return if xml.nil?
-      feed = Feedjira.parse(xml)
-      process_entries(site, src, feed.entries)
+      url = src['rss_url']
+      return unless present_url?(url)
+
+      begin
+        response = HTTParty.get(url)
+        xml = response&.body
+        return if xml.nil? || xml.strip.empty?
+        feed = Feedjira.parse(xml)
+        entries = feed.respond_to?(:entries) ? feed.entries : []
+        process_entries(site, src, entries)
+      rescue StandardError => e
+        Jekyll.logger.warn "ExternalPosts", "Failed to fetch RSS from #{url}: #{e.class} #{e.message}"
+      end
     end
 
     def process_entries(site, src, entries)
@@ -67,43 +82,65 @@ module ExternalPosts
     end
 
     def fetch_from_urls(site, src)
-      src['posts'].each do |post|
-        puts "...fetching #{post['url']}"
-        content = fetch_content_from_url(post['url'])
-        content[:published] = parse_published_date(post['published_date'])
-        create_document(site, src['name'], post['url'], content)
+      posts = src['posts']
+      return unless posts.is_a?(Array)
+
+      posts.each do |post|
+        url = (post['url'] || '').to_s.strip
+        next unless present_url?(url)
+
+        puts "...fetching #{url}"
+        content = fetch_content_from_url(url)
+        content[:published] = safe_published_date(post['published_date'])
+        create_document(site, src['name'], url, content)
       end
     end
 
-    def parse_published_date(published_date)
+    def safe_published_date(published_date)
       case published_date
       when String
-        Time.parse(published_date).utc
+        Time.parse(published_date).utc rescue Time.now.utc
       when Date
         published_date.to_time.utc
+      when Time
+        published_date.utc
       else
-        raise "Invalid date format for #{published_date}"
+        Time.now.utc
       end
     end
 
     def fetch_content_from_url(url)
-      html = HTTParty.get(url).body
-      parsed_html = Nokogiri::HTML(html)
+      begin
+        response = HTTParty.get(url)
+        html = response&.body.to_s
+        parsed_html = Nokogiri::HTML(html)
 
-      title = parsed_html.at('head title')&.text.strip || ''
-      description = parsed_html.at('head meta[name="description"]')&.attr('content')
-      description ||= parsed_html.at('head meta[name="og:description"]')&.attr('content')
-      description ||= parsed_html.at('head meta[property="og:description"]')&.attr('content')
+        title = parsed_html.at('head title')&.text.to_s.strip
+        description = parsed_html.at('head meta[name="description"]')&.attr('content')
+        description ||= parsed_html.at('head meta[name="og:description"]')&.attr('content')
+        description ||= parsed_html.at('head meta[property="og:description"]')&.attr('content')
 
-      body_content = parsed_html.search('p').map { |e| e.text }
-      body_content = body_content.join() || ''
+        body_content = parsed_html.search('p').map { |e| e.text.to_s }.join
 
-      {
-        title: title,
-        content: body_content,
-        summary: description
-        # Note: The published date is now added in the fetch_from_urls method.
-      }
+        {
+          title: title,
+          content: body_content,
+          summary: description
+          # published is set by caller
+        }
+      rescue StandardError => e
+        Jekyll.logger.warn "ExternalPosts", "Failed to fetch content from #{url}: #{e.class} #{e.message}"
+        { title: '', content: '', summary: '' }
+      end
+    end
+
+    private
+
+    def present_url?(url)
+      s = (url || '').to_s.strip
+      return false if s.empty?
+      # accept http/https only
+      s.start_with?('http://', 'https://')
     end
 
   end

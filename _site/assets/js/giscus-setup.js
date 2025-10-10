@@ -18,8 +18,8 @@ function determineGiscusTheme() {
 
   let giscusAttributes = {
     src: "https://giscus.app/client.js",
-    "data-repo": "",
-    "data-repo-id": "",
+    "data-repo": "kylewells/clevelandsorcery",
+    "data-repo-id": "1073812234",
     "data-category": "Comments",
     "data-category-id": "",
     "data-mapping": "title",
