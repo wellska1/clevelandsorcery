@@ -1,5 +1,21 @@
 ---
 deployment:
  tasks:
- - export DEPLOYPATH=/home/kylewells/public_html/
- - /bin/cp -R _site/* $DEPLOYPATH
+		- export DEPLOYPATH="$HOME/kylewells/public_html"
+		- /bin/mkdir -p "$DEPLOYPATH"
+		# Build the site on the server if _site is missing
+		- |
+			if [ ! -d "_site" ]; then \
+				if command -v bundle >/dev/null 2>&1; then \
+					echo "Building site with Bundler/Jekyll on server..."; \
+					JEKYLL_ENV=production bundle exec jekyll build -d _site || { echo "bundle exec jekyll build failed" >&2; exit 1; }; \
+				elif command -v jekyll >/dev/null 2>&1; then \
+					echo "Building site with Jekyll on server..."; \
+					JEKYLL_ENV=production jekyll build -d _site || { echo "jekyll build failed" >&2; exit 1; }; \
+				else \
+					echo "_site not found and Jekyll isn't available on the server. Build locally and push, or enable Ruby/Jekyll on cPanel." >&2; \
+					exit 1; \
+				fi; \
+			fi
+		# Deploy only the contents of _site to public_html (delete removed files)
+		- /usr/bin/rsync -a --delete _site/ "$DEPLOYPATH/"
