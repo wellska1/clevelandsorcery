@@ -1,33 +1,6 @@
-## cPanel Git Deployment manifest for this Jekyll site
-## This script will run on cPanel's Git Version Control deployment hook.
-## It installs Ruby gems and Node packages (if present), builds assets,
-## runs `jekyll build`, then syncs the generated `_site/` to `public_html/`.
-
+---
 deployment:
-	tasks:
-		- echo "[cpanel] Starting deployment: build Jekyll site and assets"
-		- export JEKYLL_ENV=production
-
-		# Install Node dependencies (prefer npm ci when package-lock.json exists)
-		- echo "[cpanel] Installing Node.js dependencies (if any)"
-		- if [ -f package-lock.json ]; then npm ci --no-audit --progress=false || npm install --no-audit --progress=false; else npm install --no-audit --progress=false || true; fi
-
-		# Install Ruby gems into vendor/bundle to avoid system-wide gem installs
-		- echo "[cpanel] Installing Ruby gems (bundler)"
-		- bundle config set --local path 'vendor/bundle' || true
-		- bundle install --jobs 4 --retry 3 --path vendor/bundle
-
-		# Build JS/CSS assets if a build script is present
-		- echo "[cpanel] Building frontend assets (if build script exists)"
-		- if [ -f package.json ] && npm run | grep -q "build"; then npm run build --if-present || true; fi
-
-		# Build the Jekyll site into _site/
-		- echo "[cpanel] Running Jekyll build"
-		- bundle exec jekyll build --config _config.yml --destination _site
-
-		# Sync generated site to public_html (cPanel document root)
-		- echo "[cpanel] Syncing _site/ -> $HOME/public_html/"
-		- rsync -av --delete _site/ "$HOME/public_html/"
-
-		- echo "[cpanel] Deployment finished"
-
+ tasks:
+ - export DEPLOYPATH=/home/user/public_html/
+ - /bin/cp index.html $DEPLOYPATH
+ - /bin/cp style.css $DEPLOYPATH
