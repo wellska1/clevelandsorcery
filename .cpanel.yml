@@ -1,40 +1,5 @@
 ---
 deployment:
   tasks:
-    # Set deploy path to the account's public_html
-    - export DEPLOYPATH="$HOME/public_html"
-    - /bin/mkdir -p "$DEPLOYPATH"
-    # Ensure Ruby, Bundler, and Jekyll are available and install if needed
-    - |
-      if ! command -v ruby >/dev/null 2>&1; then
-        echo "Ruby is not available on this server. Enable Ruby in cPanel (Setup Ruby App) or contact your host." >&2
-        exit 1
-      fi
-      RUBY_VER_DIR=$(ruby -e 'require "rbconfig"; print RbConfig::CONFIG["ruby_version"]')
-      export GEM_HOME="$HOME/.gem/ruby/$RUBY_VER_DIR"
-      export GEM_PATH="$GEM_HOME"
-      export PATH="$HOME/.gem/ruby/$RUBY_VER_DIR/bin:$PATH"
-      if ! command -v bundle >/dev/null 2>&1; then
-        echo "Installing Bundler to user gem path..."
-        gem install --user-install bundler --no-document || { echo "Failed to install Bundler" >&2; exit 1; }
-      fi
-      if ! command -v jekyll >/dev/null 2>&1; then
-        echo "Installing Jekyll to user gem path..."
-        gem install --user-install jekyll --no-document || { echo "Failed to install Jekyll" >&2; exit 1; }
-      fi
-    # Install project gems (Jekyll plugins) to user gem path
-    - |
-      export BUNDLE_PATH="$GEM_HOME"
-      export BUNDLE_BIN="$HOME/.gem/bin"
-      bundle install --jobs=2 --retry=3 || { echo "bundle install failed" >&2; exit 1; }
-    # Build the site (production)
-    - |
-      echo "Building site with Jekyll (production)..."
-      JEKYLL_ENV=production bundle exec jekyll build -d _site || { echo "Jekyll build failed" >&2; exit 1; }
-    # Deploy only the contents of _site to public_html (delete removed files)
-    - |
-      if command -v rsync >/dev/null 2>&1; then
-        /usr/bin/rsync -a --delete _site/ "$DEPLOYPATH/" || { echo "rsync deploy failed" >&2; exit 1; }
-      else
-        /bin/cp -a _site/. "$DEPLOYPATH/" || { echo "cp deploy failed" >&2; exit 1; }
-      fi
+    - export DEPLOYPATH=/home/kylewells/public_html/
+    -  - /bin/cp -R _site $DEPLOYPATH
