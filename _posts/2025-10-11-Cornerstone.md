@@ -18,4 +18,6 @@ giscus_comments: true
 ---
 > Cornerstone event report coming soon
 
-(https://play.sorcerytcg.com/events/f385d0f4-c15f-4994-9faa-67de8fb00284)
+https://play.sorcerytcg.com/events/f385d0f4-c15f-4994-9faa-67de8fb00284
+
+{% include figure.liquid loading="eager" path="assets/img/curios.jpg" class="img-fluid rounded z-depth-1" zoomable=true %}
