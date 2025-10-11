@@ -1,7 +1,5 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH="$HOME/public_html"
-    - /bin/mkdir -p "$DEPLOYPATH"
-    - /bin/cp -a _site/. "$DEPLOYPATH/"
+      - export DEPLOYPATH=/home/kylewells/public_html/
       - /bin/cp -R /home/kylewells/repositories/clevelandsorcery/_site/* $DEPLOYPATH
