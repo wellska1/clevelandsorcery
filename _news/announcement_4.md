@@ -5,4 +5,4 @@ inline: true
 related_posts: false
 ---
 
-Cornerstone event today!
+Cornerstone event today! https://play.sorcerytcg.com/events/f385d0f4-c15f-4994-9faa-67de8fb00284
