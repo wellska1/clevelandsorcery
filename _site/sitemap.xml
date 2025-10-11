@@ -1,1 +1,33 @@
-<?xml version="1.0" encoding="UTF-8"?> <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"> <url> <loc>/news/announcement_4/</loc> <lastmod>2025-10-11T11:59:00+00:00</lastmod> </url> <url> <loc>/news/announcement_5/</loc> <lastmod>2025-10-12T11:59:00+00:00</lastmod> </url> <url> <loc>/news/announcement_6/</loc> <lastmod>2025-10-12T11:59:00+00:00</lastmod> </url> <url> <loc>/</loc> </url> <url> <loc>/news/</loc> </url> <url> <loc>/people/</loc> </url> <url> <loc>/projects/</loc> </url> <url> <loc>/repositories/</loc> </url> <url> <loc>/blog/</loc> </url> </urlset>
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url>
+<loc>http://0.0.0.0:8080/news/announcement_4/</loc>
+<lastmod>2025-10-11T11:59:00+00:00</lastmod>
+</url>
+<url>
+<loc>http://0.0.0.0:8080/news/announcement_5/</loc>
+<lastmod>2025-10-12T11:59:00+00:00</lastmod>
+</url>
+<url>
+<loc>http://0.0.0.0:8080/news/announcement_6/</loc>
+<lastmod>2025-10-12T11:59:00+00:00</lastmod>
+</url>
+<url>
+<loc>http://0.0.0.0:8080/</loc>
+</url>
+<url>
+<loc>http://0.0.0.0:8080/news/</loc>
+</url>
+<url>
+<loc>http://0.0.0.0:8080/people/</loc>
+</url>
+<url>
+<loc>http://0.0.0.0:8080/projects/</loc>
+</url>
+<url>
+<loc>http://0.0.0.0:8080/repositories/</loc>
+</url>
+<url>
+<loc>http://0.0.0.0:8080/blog/</loc>
+</url>
+</urlset>
