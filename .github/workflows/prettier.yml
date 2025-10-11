@@ -25,22 +25,13 @@ jobs:
         id: prettier
         run: npx prettier . --check
       - name: Create diff 📝
-        # Generate a human-readable diff when Prettier fails; always produce diff.html (even placeholder)
-        if: ${{ failure() && steps.prettier.conclusion == 'failure' }}
+        # https://docs.github.com/en/actions/learn-github-actions/expressions#failure
+        if: ${{ failure() }}
         run: |
-          set -eo pipefail
-          # Try to auto-format so we can diff against current index
-          npx prettier . --write || true
-          # Avoid CRLF noise
-          git config --global core.safecrlf false
-          # Produce diff of working tree vs index, excluding lock/manifests
-          git diff -- . ':(exclude)package-lock.json' ':(exclude)package.json' > diff.txt || true
-          if [ ! -s diff.txt ]; then
-            echo "<html><body><h3>No Prettier changes detected</h3><p>Prettier failed but produced no diff output. This can happen if the error is not formatting-related (e.g., plugin config).</p></body></html>" > diff.html
-          else
-            npm install -g diff2html-cli
-            diff2html -i file -s side -F diff.html -- diff.txt
-          fi
+          npx prettier . --write
+          git diff -- . ':(exclude)package-lock.json' ':(exclude)package.json' > diff.txt
+          npm install -g diff2html-cli
+          diff2html -i file -s side -F diff.html -- diff.txt
       - name: Upload html diff ⬆️
         id: artifact-upload
         if: ${{ failure() && steps.prettier.conclusion == 'failure' }}
@@ -49,7 +40,6 @@ jobs:
           name: HTML Diff
           path: diff.html
           retention-days: 7
-          if-no-files-found: warn
       - name: Dispatch information to repository 🗣️
         if: ${{ failure() && steps.prettier.conclusion == 'failure' && github.event_name == 'pull_request' }}
         uses: peter-evans/repository-dispatch@v2
