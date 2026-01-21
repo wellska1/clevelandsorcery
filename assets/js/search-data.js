@@ -16,12 +16,12 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/blog/";
           },
-        },{id: "nav-projects",
-          title: "projects",
-          description: "A growing collection of your cool projects.",
+        },{id: "nav-decks",
+          title: "decks",
+          description: "A growing collection of your cool decks.",
           section: "Navigation",
           handler: () => {
-            window.location.href = "/projects/";
+            window.location.href = "/decks/";
           },
         },{id: "nav-repositories",
           title: "repositories",
@@ -37,7 +37,23 @@ ninja.data = [{
           handler: () => {
             window.location.href = "/people/";
           },
-        },{id: "news-cornerstone-event-today-https-play-sorcerytcg-com-events-f385d0f4-c15f-4994-9faa-67de8fb00284",
+        },{id: "post-cornerstone-october-2025",
+        
+          title: "Cornerstone October 2025",
+        
+        description: "CCR&#39;s October 2025 Cornerstone Event",
+        section: "Posts",
+        handler: () => {
+          
+            window.location.href = "/blog/2025/10/11/Cornerstone/";
+          
+        },
+      },{id: "decks-starter-blue-deck",
+          title: 'Starter Blue Deck',
+          description: "A beginner-friendly blue control deck focused on card draw and countering threats",
+          section: "Decks",handler: () => {
+              window.location.href = "/decks/starter-blue/";
+            },},{id: "news-cornerstone-event-today-https-play-sorcerytcg-com-events-f385d0f4-c15f-4994-9faa-67de8fb00284",
           title: 'Cornerstone event today! https://play.sorcerytcg.com/events/f385d0f4-c15f-4994-9faa-67de8fb00284',
           description: "",
           section: "News",},{id: "news-corner-stone-event-in-sidney-oh-december-7th-https-play-sorcerytcg-com-events-7aa66b1c-d638-4f0e-8413-5d4c44481954",
