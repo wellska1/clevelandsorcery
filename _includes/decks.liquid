@@ -1,0 +1,42 @@
+<div class="col">
+  <a href="{% if deck.redirect %}{{ deck.redirect }}{% else %}{{ deck.url | relative_url }}{% endif %}">
+    <div class="card h-100 hoverable">
+      {% if deck.img %}
+        {%
+          include figure.liquid
+          loading="eager"
+          path=deck.img
+          sizes = "250px"
+          alt="deck thumbnail"
+          class="card-img-top"
+        %}
+      {% endif %}
+      <div class="card-body">
+        <h2 class="card-title">{{ deck.title }}</h2>
+        <p class="card-text">{{ deck.description }}</p>
+        <div class="row ml-1 mr-1 p-0">
+          {% if deck.github %}
+            <div class="github-icon">
+              <div class="icon" data-toggle="tooltip" title="Code Repository">
+                <a href="{{ deck.github }}"><i class="fa-brands fa-github gh-icon"></i></a>
+              </div>
+              {% if deck.github_stars %}
+                <span class="stars" data-toggle="tooltip" title="GitHub Stars">
+                  <i class="fa-solid fa-star"></i>
+                  <span id="{{ deck.github_stars }}-stars"></span>
+                </span>
+              {% endif %}
+            </div>
+          {% endif %}
+          {% if deck.external_source %}
+            <div class="github-icon">
+              <div class="icon" data-toggle="tooltip" title="External Source">
+                <a href="{{ deck.external_source }}"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </a>
+</div>
