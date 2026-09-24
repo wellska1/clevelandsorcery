@@ -433,7 +433,18 @@ document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>bookTab(b.datas
 document.querySelectorAll('[data-dir]').forEach(b=>{b.onpointerdown=e=>{e.preventDefault();b.setPointerCapture(e.pointerId);keys[b.dataset.dir]=true};b.onpointerup=b.onpointercancel=b.onlostpointercapture=()=>keys[b.dataset.dir]=false});
 window.addEventListener('keydown',keydown);window.addEventListener('keyup',e=>keys[e.code]=false);window.addEventListener('blur',()=>Object.keys(keys).forEach(k=>keys[k]=false));
 $('modal-backdrop').onclick=e=>{if(e.target===$('modal-backdrop'))closeModal()};
-new ResizeObserver(()=>{const r=$('stage').getBoundingClientRect();canvas.width=r.width<600?480:640;canvas.height=Math.round(canvas.width*r.height/r.width);render()}).observe($('stage'));
+function resizeCanvasToStage(){
+ const r=$('stage').getBoundingClientRect();
+ const dpr=Math.max(1,Math.min(2,window.devicePixelRatio||1));
+ const width=Math.max(320,Math.round(r.width*dpr));
+ const height=Math.max(180,Math.round(r.height*dpr));
+ if(canvas.width!==width||canvas.height!==height){canvas.width=width;canvas.height=height}
+ render();
+}
+new ResizeObserver(resizeCanvasToStage).observe($('stage'));
+window.addEventListener('orientationchange',()=>setTimeout(resizeCanvasToStage,120));
+if(window.visualViewport)window.visualViewport.addEventListener('resize',resizeCanvasToStage);
+resizeCanvasToStage();
 function loop(t){let dt=Math.min((t-last)/1000,.05);last=t;update(dt);render();frameCount++;if(t-fpsLast>1000){fps=Math.round(frameCount*1000/(t-fpsLast));$('perf').textContent=`${fps} FPS`;frameCount=0;fpsLast=t}requestAnimationFrame(loop)}requestAnimationFrame(loop);
 window.advanceTime=ms=>{for(let i=0;i<Math.ceil(ms/16.667);i++)update(1/60);render()};
 window.render_game_to_text=()=>JSON.stringify({mode:state.mode,chapter:state.chapter,coordinates:'world pixels; origin top-left, x right, y down',player:{x:Math.round(state.p.x),y:Math.round(state.p.y)},dog:{x:Math.round(state.dog.x),y:Math.round(state.dog.y)},hp:state.hp,maxHp:state.maxHp,focus:state.fp,snacks:state.snacks,acorns:state.acorns,level:state.level,quest:state.quest,objective:questTitle(),nearby:nearest?.id||null,dialog:state.mode==='dialog'?$('dialog-text').textContent:null,enemy:state.mode==='battle'?state.enemy:null,busy:state.busy,droidDefeated:state.droid,scalesDefeated:state.scales,won:state.won,ship:state.ship||null,cave:state.cave||null,pole:state.pole||null,entities:availableNPCs().map(({id,x,y})=>({id,x,y})),obstacles:state.chapter===2?'Walkable hull x62–964/y140–606. Bulkheads x333–363 and x685–715 have doors at y325–391. First unlocks after sentry; second after relays. Reactor x477–568/y150–268; brig wall x473–579/y437–483; shuttle x91–199/y283–334.':state.chapter===3?'Walkable tunnels x68–956/y118–620. Eastern command gate x470–540 stays closed until the Drill Sentry is defeated. Magma trench x688–864/y248–452 and collapsed wall x274–364/y248–404 are blocked terrain.':state.chapter===4?'Walkable icefield x72–950/y112–622. Frozen gate x452–548 stays closed until all beacons are lit. Glacier crevasse x350–520/y252–430 and forge wall x700–760 with a center doorway are blocked terrain.':'Cottage x145–270/y287–357; stream x698–763, bridge y316–385; sentry gate x671–690 until sentry defeated; trees around clearing edges'});
