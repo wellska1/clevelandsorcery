@@ -4,11 +4,35 @@
 .title-content{margin-top:0;padding:16px 14px 24px;max-height:100%}
 .title-content .gold-button{margin-top:18px;margin-bottom:10px}
 .chapter-jump{display:block;width:min(92%,520px);margin-top:10px}
-.chapter-intro{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff0d0;background:linear-gradient(#0b1e329e,#10284065),url('./assets/battleship.webp') center/cover;padding:28px;gap:23px}
+.chapter-intro{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff0d0;background:linear-gradient(#0b1e329e,#10284065),url('./assets/battleship.webp') center/cover;padding:28px;gap:23px;overflow:hidden;isolation:isolate}
+.chapter-intro::before{content:'';position:absolute;inset:-12%;background:radial-gradient(42% 28% at 22% 34%,#ffffff26 0%,#0000 72%),radial-gradient(36% 30% at 76% 24%,#8be6ff2f 0%,#0000 70%),linear-gradient(180deg,#0f253640 0%,#0000 34%,#0613216e 100%);mix-blend-mode:screen;opacity:.62;animation:intro-drift 14s ease-in-out infinite;pointer-events:none;z-index:0}
+.chapter-intro > *{position:relative;z-index:1}
 .chapter-intro .eyebrow{color:#f3d39a;font-size:12px;max-width:440px;line-height:1.7;text-shadow:0 2px 5px #132534}
 .chapter-intro h2{font:600 clamp(45px,5.8vw,76px)/1 var(--font-display);letter-spacing:-1px;text-shadow:0 3px 0 #1d3143,0 6px 20px #0c1e33}
 .chapter-intro p{font-size:16px;line-height:1.7;color:#e9edf0;text-shadow:0 2px 5px #09192b}
 .chapter-intro small{font-size:12px;color:#d5e1e4;background:#122b3bc9;padding:7px 12px;max-width:420px;line-height:1.5}
+body[data-chapter="3"] .chapter-intro{
+	background:
+		radial-gradient(120% 70% at 50% 100%, #8d4e2f66 0%, #6a3b2666 28%, #231d2688 58%, #13161fdd 100%),
+		radial-gradient(35% 28% at 78% 34%, #ff9a5d3b 0%, #0000 70%),
+		radial-gradient(28% 20% at 26% 40%, #76d7e647 0%, #0000 72%),
+		linear-gradient(160deg, #2f3139 0%, #201f2c 35%, #1a1822 64%, #10121a 100%);
+}
+body[data-chapter="3"] .chapter-intro::before{background:radial-gradient(40% 28% at 22% 76%,#ffbe6f33 0%,#0000 72%),radial-gradient(34% 22% at 80% 28%,#80e1f72b 0%,#0000 72%),linear-gradient(180deg,#120f1666 0%,#0000 38%,#0d0f1669 100%);opacity:.72;animation-duration:11s}
+body[data-chapter="3"] .chapter-intro .eyebrow{color:#f8d6a0;text-shadow:0 2px 6px #120f17}
+body[data-chapter="3"] .chapter-intro h2{text-shadow:0 3px 0 #3f2d26,0 6px 18px #100d14}
+body[data-chapter="3"] .chapter-intro small{background:#2f222ccf;color:#efd7b0}
+body[data-chapter="4"] .chapter-intro{
+	background:
+		radial-gradient(100% 65% at 50% 100%, #7bbcd366 0%, #5da0bf66 35%, #284867b3 72%, #0f2a47e8 100%),
+		radial-gradient(36% 26% at 78% 28%, #9ff8ff44 0%, #0000 72%),
+		radial-gradient(28% 18% at 18% 36%, #9beecf3e 0%, #0000 72%),
+		linear-gradient(168deg, #24435f 0%, #173655 45%, #14324c 70%, #10283c 100%);
+}
+body[data-chapter="4"] .chapter-intro::before{background:radial-gradient(42% 30% at 14% 16%,#b4fff155 0%,#0000 72%),radial-gradient(40% 28% at 82% 22%,#8fd8ff44 0%,#0000 72%),linear-gradient(180deg,#0d234259 0%,#0000 40%,#0d2b4763 100%);opacity:.7;animation-duration:16s}
+body[data-chapter="4"] .chapter-intro .eyebrow{color:#d6f4ff;text-shadow:0 2px 6px #0d2338}
+body[data-chapter="4"] .chapter-intro h2{text-shadow:0 3px 0 #1a5073,0 7px 20px #0b2135}
+body[data-chapter="4"] .chapter-intro small{background:#17344bcf;color:#d7f2ff}
 body[data-chapter="2"] .cartridge{border-color:#2d4150;box-shadow:0 0 0 1px #7b8b90,0 15px 35px #1a384025}
 body[data-chapter="2"] .console-bar{background:#243b49;border-top-color:#a3c0c744}
 body[data-chapter="2"] .location,body[data-chapter="2"] .pause,body[data-chapter="2"] .objective{background:#182f44ed;border-color:#aac6d055}
@@ -20,5 +44,10 @@ body[data-chapter="2"] .nearby{background:#182f44ed}
 body[data-chapter="2"] .end-screen{background:linear-gradient(#102b40ce,#152c3cce),url('./assets/battleship.webp') center/cover}
 body[data-chapter="2"] .health-track i{background:#9bc4b1}
 body[data-chapter="2"] #touch-interact{background:#294b60}
+@keyframes intro-drift{
+	0%{transform:translate3d(-1.6%,0,0) scale(1.02)}
+	50%{transform:translate3d(1.4%,-1.6%,0) scale(1.05)}
+	100%{transform:translate3d(-1.6%,0,0) scale(1.02)}
+}
 @media(max-width:900px){.title-content{padding:14px 12px 20px}}
 @media(max-width:600px){.chapter-jump{font-size:11px;max-width:280px;margin-top:12px;padding:7px 10px}.title-content{padding:15px}.title-content .gold-button{margin-top:16px;margin-bottom:12px}.chapter-intro{padding:22px;gap:20px;background-position:40% center}.chapter-intro h2{font-size:49px}.chapter-intro .eyebrow{font-size:10px;letter-spacing:1.5px;max-width:270px}.chapter-intro p{font-size:14px}.chapter-intro small{font-size:11px}.chapter-intro .gold-button{padding:12px 20px;gap:20px}}

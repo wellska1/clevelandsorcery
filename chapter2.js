@@ -71,7 +71,7 @@ const Ship={
   },
   board(){
     show('chapter-intro',false);state.mode='explore';show('location');show('objective');show('pause-btn');
-    say([['Kyle','gray','Santa lent us a captured shuttle. We snuck into a Corporate Alliance battleship. This is officially not a quiet walk.'],['Kenobi','kenobi','[Kenobi sniffs the cold metal deck. Something very large clanks beyond the bulkhead.]'],['Todd','todd','Surprise! I thought this was the carriage home. Do all carriages have emergency eject buttons?'],['Kyle','gray','Todd. Do not press anything. Santa’s transmission is on that amber console just north of us.']]);
+    say([['Kyle','gray','Santa lent us a captured shuttle. We snuck onto a Corporate Alliance battleship. This is definitely not a quiet walk.'],['Kenobi','kenobi','[Kenobi sniffs the cold metal deck. Something huge clanks beyond the bulkhead.]'],['Todd','todd','Surprise! I thought this was the carriage home. Do all carriages have emergency eject buttons?'],['Kyle','gray','Todd. Hands in pockets. Santa’s transmission is on that amber console just north of us.']]);
   },
   entities(){return Ship.nodes.filter(n=>!(n.id==='deckguard'&&state.ship.guard)&&!(n.id==='captain'&&state.ship.captain))},
   goal(){return Ship.goals[state.quest]},
@@ -88,7 +88,7 @@ const Ship={
   interact(n){
     const s=state.ship;
     if(n.id==='radio'){
-      if(!s.briefed)say([['Santa','santa','Kyle, the Iron Serpent is preparing to fire on Greenwood. We must stop it without hurting anyone aboard.'],['Santa','santa','A heavy B2 sentry guards the east bulkhead. Defeat it, take its keycard, and rescue our scout in engineering. She knows the targeting system.'],['Professor Nutty','squirrel','These droids are tougher than the skinny ones! When their arm cannon charges, build your block fort.'],['Mortimer Mole','mole','I will provide... um... extremely nervous moral support. From somewhere that is not a battleship.']],()=>{s.briefed=true;state.quest=1});
+      if(!s.briefed)say([['Santa','santa','Kyle, the Iron Serpent is preparing to fire on Greenwood. We must stop it without harming anyone aboard.'],['Santa','santa','A heavy B2 sentry guards the east bulkhead. Defeat it, take its keycard, and rescue our Daddy Republic scout in engineering. She knows the targeting system.'],['Professor Nutty','squirrel','These droids are sturdier than the skinny ones! When their arm cannon charges, build your block fort.'],['Mortimer Mole','mole','I will provide... um... very committed moral support. From somewhere that is absolutely not this battleship.']],()=>{s.briefed=true;state.quest=1});
       else say([['Santa','santa',s.captain?'The cannons are silent! Return to the shuttle in the west hangar. Everyone is counting on you.':'Find the scout after defeating the B2 sentry. The medical station south of the shuttle restores health and focus.']]);
     }else if(n.id==='deckguard'){
       if(!s.briefed)say([['Kyle','gray','That is a LOT of armor. Better hear Santa’s plan at the hangar console before we pick a fight.']]);
@@ -101,7 +101,7 @@ const Ship={
       else say([['Kenobi','kenobi','[Kenobi finds three trail snacks and ten acorns. Why does a battleship have acorns? Best not to ask.]']],()=>{s[key]=true;state.snacks+=3;state.acorns+=10;tone(660,.16)});
     }else if(n.id==='scout'){
       if(!s.guard)say([['Republic scout','santa','The B2 sentry has my keycard. I knew I should have disguised myself as a taller elf.']]);
-      else if(!s.freed)say([['Republic scout','santa','The keycard! Thank you. I am Holly, Daddy Republic intelligence. Very festive. Very classified.'],['Holly','santa','The targeting relays use a chess knight’s route: B1, then C3, then D1. Activate those three consoles in that order.'],['Kyle','gray','Two squares, then one. I know this game.'],['Holly','santa','B1 is northwest of the reactor. C3 is northeast. D1 is southeast. A wrong move resets the sequence, but you can try again.']],()=>{s.freed=true;state.quest=3;state.acorns+=10});
+      else if(!s.freed)say([['Republic scout','santa','The keycard! Thank you. I am Holly, Daddy Republic intelligence. Very festive. Very classified.'],['Holly','santa','The targeting relays follow a chess knight route: B1, then C3, then D1. Activate them in that order.'],['Kyle','gray','Two squares, then one. Perfect.'],['Holly','santa','B1 is northwest of the reactor. C3 is northeast. D1 is southeast. Wrong order resets the chain, but you can retry immediately.']],()=>{s.freed=true;state.quest=3;state.acorns+=10});
       else say([['Holly','santa',s.captain?'I will get the crew to safety. You and Kenobi get back to your shuttle!':'The knight’s route is B1 → C3 → D1. Check the schematic southwest of the reactor if you need a reminder.']]);
     }else if(n.id==='schematic'){
       say([['Targeting schematic','droid','SECURITY ROUTE: B1 → C3 → D1. Shield relay: northwest. Drive relay: northeast. Targeting relay: southeast.'],['Kyle','gray',s.freed?'The same route Holly gave us. A chess puzzle on a battleship. Finally, homework I can use.':'First we should free the scout in the brig south of here. She can make sure this shuts down the weapons safely.']]);
@@ -238,169 +238,242 @@ const Ship={
 };
 
 const Underdeep={
-  title:'Roots of the Hollow Crown',
+  title:'Burrow Bastion',
   nodes:[
-    {id:'lift',name:'Service lift',type:'lift',x:156,y:535},
+    {id:'lift',name:'Burrow lift',type:'lift',x:156,y:535},
     {id:'mortimer3',name:'Mortimer Mole',type:'mole',x:231,y:476},
-    {id:'forge',name:'Forge camp · restore HP & focus',type:'forge',x:326,y:563},
-    {id:'cache3',name:'Miner stash',type:'cache',x:368,y:516},
-    {id:'crystal',name:'Crystal relay spindle',type:'crystal',x:442,y:201},
-    {id:'gateguard',name:'Burrow Warden',type:'snake',x:525,y:352},
-    {id:'holo3',name:'Stone whisperer totem',type:'holo',x:718,y:190},
-    {id:'tyrant',name:'The Hollow Tyrant',type:'snake',x:826,y:360},
+    {id:'prof3',name:'Professor Nutty',type:'squirrel',x:429,y:198},
+    {id:'camp3',name:'Nut Brigade campfire · restore HP & focus',type:'forge',x:326,y:563},
+    {id:'cache3',name:'Nut Brigade supplies',type:'cache',x:368,y:516},
+    {id:'sentry3',name:'Corporate Drill Sentry',type:'droid',x:525,y:352},
+    {id:'scales3',name:'Scales',type:'snake',x:826,y:360},
+    {id:'todd3',name:'Todd',type:'todd',x:610,y:540},
+    {id:'gil3',name:'Gilgamesh',type:'wizard',x:558,y:540},
+    {id:'hil3',name:'Hilgamesh',type:'hil',x:645,y:542},
+    {id:'dum3',name:'Dumbledore',type:'beard',x:694,y:546},
     {id:'rootsign',name:'Tunnel marker',type:'sign',x:600,y:566}
   ],
   goals:[
     'Find Mortimer in the lower tunnels',
-    'Energize the crystal relay spindle',
-    'Defeat the Burrow Warden at the gate',
-    'Cross into the magma vault',
-    'Defeat the Hollow Tyrant',
-    'Return to the service lift',
-    'The caverns are secure.'
+    'Rally Professor Nutty and the Nut Brigade',
+    'Defeat the Corporate Drill Sentry',
+    'Push east and confront Scales',
+    'Defeat Scales in the command chamber',
+    'Return to the burrow lift',
+    'The tunnels are secure.'
   ],
   start(quick=false){
     if(quick){fresh();state.chapter=2;state.level=3;state.maxHp=110;state.hp=110;state.maxFp=8;state.fp=8;state.acorns=75;state.snacks=6}
     state.chapter=3;state.quest=0;state.won=false;state.enemy=null;state.busy=false;state.guard=false;state.hitTime=0;state.flash=0;
-    state.cave={briefed:false,crystal:false,guard:false,cache:false,boss:false,escaped:false};
+    state.cave={briefed:false,rallied:false,guard:false,cache:false,boss:false,escaped:false};
     state.p={x:170,y:545,dir:1};state.dog={x:143,y:557};state.hp=state.maxHp;state.fp=state.maxFp;state.snacks=Math.max(state.snacks,3);
     nearest=null;dialogQueue=[];afterDialog=null;Object.keys(keys).forEach(k=>keys[k]=false);
     state.mode='chapterIntro';Underdeep.theme();
     ['title-screen','end-screen','dialog','battle-ui','location','objective','pause-btn','nearby'].forEach(id=>show(id,false));
-    $('board-btn').textContent='Descend underground →';
+    $('board-btn').textContent='Descend to the tunnels →';
     show('chapter-intro');
-    $('boarding-note').textContent=quick?'Chapter III quick start · Level 3 · Cavern-ready supplies':'Your gear carries forward · Mortimer sent coordinates from below';
+    $('boarding-note').textContent=quick?'Chapter III quick start · Level 3 · Burrow emergency':'Mortimer called for help · Nut Brigade mobilized underground';
     hud();$('board-btn').focus();
   },
   theme(){
-    document.body.dataset.chapter='3';$('chapter-label').textContent='CHAPTER III · ROOTS OF THE HOLLOW CROWN';
-    document.querySelector('#location small').textContent='UNDERDEEP CAVERNS';
+    document.body.dataset.chapter='3';$('chapter-label').textContent='CHAPTER III · BURROW BASTION';
+    document.querySelector('#location small').textContent='GREENWOOD UNDER-TUNNELS';
     $('location-name').textContent=Underdeep.location();
-    document.querySelector('.chapter-note h2').textContent='Beneath the roots, something older wakes.';
-    document.querySelector('.chapter-note p').textContent='A quake splits Mortimer’s tunnels open. Crystal relays flicker, a magma gate shakes loose, and a serpent lord stirs below Greenwood. Kyle and Kenobi head underground.';
-    document.title='The Kyle Chronicles · Roots of the Hollow Crown';
+    document.querySelector('.chapter-note h2').textContent='The tunnels are under siege.';
+    document.querySelector('.chapter-note p').textContent='Mortimer’s burrow network is overrun by Corporate Alliance scouts. Professor Nutty and the Nut Brigade need Kyle and Kenobi to hold the line before Scales takes the tunnels.';
+    document.title='The Kyle Chronicles · Burrow Bastion';
     const intro=$('chapter-intro');
-    intro.querySelector('.eyebrow').textContent='CHAPTER III · BELOW GREENWOOD';
-    intro.querySelector('h2').textContent='Roots of the Hollow Crown';
-    intro.querySelector('p').innerHTML='A tremor opens forgotten tunnels.<br>Old crystal gates now guard a deeper danger.';
+    intro.querySelector('.eyebrow').textContent='CHAPTER III · THE TUNNELS BELOW';
+    intro.querySelector('h2').textContent='Burrow Bastion';
+    intro.querySelector('p').innerHTML='Mortimer is cornered underground.<br>The Nut Brigade stands ready, if Kyle can lead them.';
   },
   board(){
     show('chapter-intro',false);state.mode='explore';show('location');show('objective');show('pause-btn');
-    say([['Kyle','gray','Mortimer sent an emergency tunnel map. If those crystal relays fail, this whole hillside collapses.'],['Kenobi','kenobi','[Kenobi sniffs damp stone and ash. Something huge is moving deeper below.]'],['Mortimer Mole','mole','Oh dear. The old gate in the magma vault is opening. Please tell me this is one of your manageable hero problems.']]);
+    say([['Kyle','gray','Mortimer’s message said droids were drilling toward the nursery tunnels.'],['Kenobi','kenobi','[Kenobi sniffs the air and growls toward the eastern chambers.]'],['Mortimer Mole','mole','Oh dear. Oh dear. They have metal boots, I have very poor distance vision, and my bravery is currently in storage. Please be heroic quickly.']]);
   },
   entities(){
-    return Underdeep.nodes.filter(n=>!(n.id==='gateguard'&&state.cave.guard)&&!(n.id==='tyrant'&&state.cave.boss));
+    return Underdeep.nodes.filter(n=>!(n.id==='sentry3'&&state.cave.guard)&&!(n.id==='scales3'&&state.cave.boss));
   },
   goal(){return Underdeep.goals[state.quest]},
-  location(){return state.p.x>670?'Magma Vault':state.p.x>390?'Crystal Gate Halls':'Lower Burrow'},
+  location(){return state.p.x>670?'Scales Command Chamber':state.p.x>390?'Nut Brigade Front':'Mortimer’s Lower Burrow'},
   collides(x,y){
     if(x<68||x>956||y<118||y>620)return true;
-    if(!state.cave.crystal&&x>470&&x<540&&y>284&&y<432)return true;
     if(x>688&&x<864&&y>248&&y<452)return true;
     if(x>274&&x<364&&y>248&&y<404)return true;
+    if(!state.cave.guard&&x>470&&x<540&&y>284&&y<432)return true;
     return false;
   },
   interact(n){
     const c=state.cave;
     if(n.id==='mortimer3'){
-      if(!c.briefed)say([['Mortimer Mole','mole','The old crystal spindle stopped humming, then the gate ahead slammed shut. Also, there is a giant snake. I buried the important part there.'],['Kyle','gray','We energize the spindle first, then deal with the snake. Same as always, Kenobi.'],['Kenobi','kenobi','Woof!']],()=>{c.briefed=true;state.quest=1;state.acorns+=8});
-      else say([['Mortimer Mole','mole',c.boss?'It is safe down here again! Safe-ish. I still dislike cave echoes.':'The spindle room is north. The gate should open once it is powered.']]);
-    }else if(n.id==='forge'){
-      say([['Forge camp','mole','Warm lanterns, dry blankets, and emergency tea.'],['Kyle','gray','Health and focus restored.']],()=>{state.hp=state.maxHp;state.fp=state.maxFp});
+      if(!c.briefed)say([['Mortimer Mole','mole','Corporate droids tunneled in from the east. I spotted Scales. Well, I heard him. Very hissy.'],['Kyle','gray','We hold this line, then push him back.'],['Mortimer Mole','mole','Please also hold my nerves. They are currently everywhere.']],()=>{c.briefed=true;state.quest=1;state.acorns+=8});
+      else say([['Mortimer Mole','mole',c.boss?'You did it! I can go back to my normal worries, like worms that look suspiciously like shoelaces.':'Professor Nutty is at the front line. He has armor, acorns, and very loud motivational speeches.']]);
+    }else if(n.id==='prof3'){
+      if(!c.briefed)say([['Professor Nutty','squirrel','Recruit! Mortimer has the details. Speak with him first.']]);
+      else if(!c.rallied)say([['Professor Nutty','squirrel','Nut Brigade, formation walnut! Droids in the east, Scales behind them.'],['Kyle','gray','We break the sentry, then take Scales.'],['Professor Nutty','squirrel','Exactly. Acorn volley support is ready on your signal. Try not to stand directly in front of Private Hazelnut.']],()=>{c.rallied=true;state.quest=2;state.acorns+=10});
+      else say([['Professor Nutty','squirrel',c.boss?'Victory in the tunnels! The Nut Brigade salutes you, recruit.':'The Drill Sentry guards the chokepoint east. Break it and the chamber opens.']]);
+    }else if(n.id==='camp3'){
+      say([['Nut Brigade campfire','squirrel','Warm stew, dry cloaks, and reinforced acorn satchels.'],['Kyle','gray','Health and focus restored.']],()=>{state.hp=state.maxHp;state.fp=state.maxFp});
     }else if(n.id==='cache3'){
-      if(c.cache)say([['Kyle','gray','We already cleaned out this stash.']]);
-      else say([['Kenobi','kenobi','[Kenobi finds two trail snacks and twelve acorns tucked under a tool roll.]']],()=>{c.cache=true;state.snacks+=2;state.acorns+=12;tone(670,.14)});
-    }else if(n.id==='crystal'){
-      if(!c.briefed){say([['Kyle','gray','Let’s talk to Mortimer first. We need to know what this relay controls.']]);return}
-      if(c.crystal){say([['Crystal relay spindle','squirrel','POWER STABLE. GATE PRESSURE RELEASED.']]);return}
-      say([['Crystal relay spindle','squirrel','RESONANCE RESTORED. INNER GATE UNLOCKED.'],['Kyle','gray','Perfect. Now we can reach the vault.']],()=>{c.crystal=true;state.quest=2;state.acorns+=10;tone(520,.12);tone(660,.16,.08)});
-    }else if(n.id==='gateguard'){
-      if(!c.crystal)say([['Burrow Warden','snake','The gate stays shut. Leave these tunnels, little hero.']]);
-      else say([['Burrow Warden','snake','No one crosses into the magma vault.'],['Kyle','gray','Then we make room. Kenobi, with me.']],()=>beginBattle('caveguard'));
-    }else if(n.id==='tyrant'){
-      if(!c.guard)say([['Stone echo','snake','A voice coils through the chamber, then fades. Something waits beyond the lava glow.']]);
-      else say([['Hollow Tyrant','snake','This root-kingdom is mine. Surface children should have stayed in the sunlight.'],['Kyle','gray','Greenwood stands because we stand.'],['Kenobi','kenobi','Grrrr.']],()=>beginBattle('caveking'));
+      if(c.cache)say([['Kyle','gray','We already packed these Nut Brigade supplies.']]);
+      else say([['Kenobi','kenobi','[Kenobi finds two trail snacks and twelve acorns in the supply box.]']],()=>{c.cache=true;state.snacks+=2;state.acorns+=12;tone(670,.14)});
+    }else if(n.id==='sentry3'){
+      if(!c.rallied)say([['Kyle','gray','Let’s coordinate with Professor Nutty first. We should hit this together.']]);
+      else say([['Corporate Drill Sentry','droid','ALL ORGANIC TUNNEL USE IS HEREBY REVOKED.'],['Kyle','gray','Kenobi, with me.']],()=>beginBattle('burrowdroid'));
+    }else if(n.id==='scales3'){
+      if(!c.guard)say([['Scales','snake','You cannot reach me while my sentry stands.']]);
+      else say([['Scales','snake','A child and a dog against the Corporate Alliance again?'],['Kyle','gray','You picked the wrong tunnels.'],['Kenobi','kenobi','Grrrr. [Kenobi takes this personally.]']],()=>beginBattle('scalesdeep'));
+    }else if(n.id==='todd3'){
+      say([['Todd','todd',c.boss?'I tripped over a cable and dropped a cage on two droids. Again.':"I am staying out of trouble. Mostly. I have only knocked over one crate this hour."]]);
+    }else if(n.id==='gil3'){
+      say([['Gilgamesh','wizard','I was watching Todd. Then he wandered underground somehow. Again.']]);
+    }else if(n.id==='hil3'){
+      say([['Hilgamesh','hil','Our strategy remains unchanged: protect Todd, then apologize for Todd.']]);
+    }else if(n.id==='dum3'){
+      say([['Dumbledore','beard','If anything collapses, I lift it. If Todd disappears, I find him.']]);
     }else if(n.id==='lift'){
-      if(!c.boss)say([['Kyle','gray','Not yet. The caverns are still shaking.']]);
-      else if(!c.escaped)say([['Mortimer Mole','mole','You did it! The tunnels are stable and the gate is sealed.'],['Kyle','gray','Then let’s head home. Kenobi earned the first nap.'],['Kenobi','kenobi','Woof!']],()=>{c.escaped=true;state.quest=6;state.won=true;state.mode='victory';endScreen(true)});
+      if(!c.boss)say([['Kyle','gray','Not yet. Scales still controls the eastern chamber.']]);
+      else if(!c.escaped)say([['Professor Nutty','squirrel','Tunnels secure. Brigade casualties: zero. Acorns thrown: classified.'],['Mortimer Mole','mole','Thank you, heroes. Especially your dog. He looks extremely reassuring.'],['Kyle','gray','Back to the surface. Santa said he might need us next.']],()=>{c.escaped=true;state.quest=6;state.won=true;state.mode='victory';endScreen(true)});
       else say([['Kyle','gray','The lift is ready whenever we are.']]);
-    }else if(n.id==='holo3'){
-      say([['Stone whisperer','snake',c.boss?'The magma quiets. The roots hold. The hill will stand another age.':'Deep stone remembers every footstep. Not all who descend return.']]);
     }else if(n.id==='rootsign'){
-      say([['Tunnel marker','squirrel','WEST: service lift & forge camp. NORTH: crystal spindle. EAST: magma vault.']]);
+      say([['Tunnel marker','squirrel','WEST: lift and camp. CENTER: brigade line. EAST: command chamber.']]);
     }
   },
   victory(kind){
     const c=state.cave;
-    if(kind==='caveguard'){
+    if(kind==='burrowdroid'){
       c.guard=true;state.quest=3;state.level=Math.max(state.level,4);state.maxHp=125;state.maxFp=9;state.hp=125;state.fp=9;state.acorns+=24;
-      say([['Burrow Warden','snake','The vault... wakes...'],['Kyle','gray','Path is clear. Level four, full health, and stronger focus. We finish this in the vault.']]);
+      say([['Corporate Drill Sentry','droid','CHASSIS FAILURE. TUNNEL CONTROL LOST.'],['Kyle','gray','Front line is ours. Level four, full health, stronger focus. Scales is next.']]);
     }else{
       c.boss=true;state.quest=5;state.acorns+=45;state.fp=state.maxFp;
-      say([['Hollow Tyrant','snake','The roots... reject me...'],['Mortimer Mole','mole','The tremors are fading! You saved Greenwood from below!'],['Kyle','gray','Then we head back to the lift. Adventure complete... for today.']]);
+      say([['Scales','snake','Cobris will hear of this! All six heads!'],['Todd','todd','I tripped on a release lever and sealed the rear tunnel. Helpful trip!'],['Professor Nutty','squirrel','Extremely helpful trip, Your Highness. Kyle, the tunnels are safe.']]);
     }
     hud();
   },
   end(win){
-    $('end-eyebrow').textContent=win?'CHAPTER III COMPLETE':'REGROUP AT THE FORGE CAMP';
-    $('end-title').textContent=win?'Deep roots. Bright hearts.':'Catch your breath below the roots.';
-    $('end-copy').textContent=win?`The gate is sealed, the caverns are stable, and Greenwood stands. ${state.acorns} acorns collected so far. Santa has one last emergency at the North Pole.`:'Kenobi guides Kyle back to the forge camp. Your cavern progress is safe. Build before heavy attacks and return stronger.';
+    $('end-eyebrow').textContent=win?'CHAPTER III COMPLETE':'REGROUP AT NUT BRIGADE CAMP';
+    $('end-title').textContent=win?'Tunnels held. Alliance repelled.':'Catch your breath below Greenwood.';
+    $('end-copy').textContent=win?`Mortimer’s burrows are secure, Scales has fled, and the Nut Brigade stands victorious. ${state.acorns} acorns collected so far. Santa is calling from the North Pole.`:'Kenobi guides Kyle back to the campfire. Your tunnel progress is safe. Build before heavy attacks and counter hard.';
     $('end-btn').textContent=win?'Continue to Chapter IV →':'Recover & try again →';
   },
   recover(){
     state.hp=state.maxHp;state.fp=state.maxFp;state.snacks=Math.max(state.snacks,3);state.p={x:322,y:560,dir:1};state.dog={x:297,y:568};state.busy=false;state.hitTime=0;nearest=null;
   },
   questHTML(){
-    const steps=['Find Mortimer in the lower tunnels.','Restore power at the crystal relay spindle.','Defeat the Burrow Warden at the gate.','Cross into the magma vault.','Defeat the Hollow Tyrant.','Return to the service lift.'];
-    return '<span class="eyebrow">CHAPTER III</span><h3>Roots of the Hollow Crown</h3><p>Descend beneath Greenwood, stabilize the old gate, and stop what woke below.</p>'+steps.map((t,i)=>`<div class="quest-step ${state.quest>i?'done':''}"><span>${state.quest>i?'✓':state.quest===i?'◇':'○'}</span><div>${t}</div></div>`).join('')+`<h3>Cavern status</h3><p>Crystal spindle: ${state.cave.crystal?'online':'offline'} · Gate: ${state.cave.guard?'breached':'guarded'} · Vault boss: ${state.cave.boss?'defeated':'active'}</p><h3>Your route</h3><p>WEST: lift, Mortimer, forge camp. NORTH: crystal spindle. EAST: magma vault and the Hollow Tyrant.</p>`;
+    const steps=['Find Mortimer in the lower tunnels.','Rally Professor Nutty and the Nut Brigade.','Defeat the Corporate Drill Sentry.','Push east and confront Scales.','Defeat Scales.','Return to the burrow lift.'];
+    return '<span class="eyebrow">CHAPTER III</span><h3>Burrow Bastion</h3><p>Defend Mortimer’s tunnels with the Nut Brigade and drive Scales out of Greenwood’s under-roads.</p>'+steps.map((t,i)=>`<div class="quest-step ${state.quest>i?'done':''}"><span>${state.quest>i?'✓':state.quest===i?'◇':'○'}</span><div>${t}</div></div>`).join('')+`<h3>Frontline status</h3><p>Brigade rallied: ${state.cave.rallied?'yes':'no'} · Sentry: ${state.cave.guard?'destroyed':'active'} · Scales: ${state.cave.boss?'defeated':'active'}</p><h3>Your route</h3><p>WEST: lift and camp. CENTER: brigade frontline. EAST: command chamber and Scales.</p>`;
   },
   drawMap(){
     const c=state.cave;
-    rect(0,0,WORLD.w,WORLD.h,'#1b1f26');
+    rect(0,0,WORLD.w,WORLD.h,'#141921');
+    // Rocky tile field with cool-warm variation so the tunnel feels carved and deep.
     for(let y=0;y<WORLD.h;y+=16)for(let x=0;x<WORLD.w;x+=16){
-      const r=rand(x,y),base=r>.5?'#262b34':'#222730';
+      const r=rand(x,y),base=r>.5?'#242b35':'#1e252e';
       rect(x,y,16,16,base);
-      if(r>.72)rect(x+3,y+4,2,2,'#2d3841');
-      if(r>.9)rect(x+11,y+9,2,1,'#40505b');
+      if(r>.68)rect(x+2,y+3,3,2,'#2f3c48');
+      if(r>.88)rect(x+10,y+9,4,2,'#3d4e5d');
     }
-    rect(70,510,310,80,'#3f3326');rect(78,518,294,64,'#6a553e');rect(90,530,40,24,'#865a34');
-    rect(396,130,94,124,'#2f3f52');rect(402,137,82,111,c.crystal?'#6ccad0':'#3f5e70');
-    rect(462,294,86,134,c.crystal?'#305748':'#4d3530');rect(472,304,66,114,c.crystal?'#4b9a7b':'#8a5a45');
-    if(!c.crystal){for(let y=312;y<415;y+=11){rect(470,y,70,4,'#ae745b');rect(468,y+1,7,2,'#4b3228')}}
-    rect(680,224,195,236,'#3a2a26');
-    for(let y=236;y<448;y+=13){rect(690,y,175,7,'#6d4338');rect(702,y+2,140,2,'#a65f49')}
-    for(let x=700;x<860;x+=26){rect(x,248,8,198,'#2b1d1b')}
-    for(let i=0;i<14;i++){const lx=706+i*11,ly=252+((i*37)%178);rect(lx,ly,6,3,i%2?'#f08c54':'#ffb468')}
+    for(let x=30;x<WORLD.w;x+=46){
+      const h=18+((x*7)%31);rect(x,0,20,h,'#212733');
+      rect(x+7,h-3,2,8,'#2d3743');
+    }
+    for(let x=18;x<WORLD.w;x+=58){
+      const h=15+((x*5)%35);rect(x,WORLD.h-h,23,h,'#1a2029');
+      rect(x+8,WORLD.h-h-6,3,7,'#283240');
+    }
+
+    // West camp and habitable tunnel.
+    rect(70,510,310,80,'#3b3128');rect(78,518,294,64,'#6b5640');rect(90,530,40,24,'#8f6138');
+    rect(84,506,282,4,'#8e6b41');
+
+    // Nut Brigade relay post.
+    rect(396,130,94,124,'#2d3d51');
+    rect(402,137,82,111,c.rallied?'#72d2d6':'#3f5f73');
+    rect(406,142,74,8,c.rallied?'#a5eff1':'#6c8897');
+
+    // Chokepoint gate.
+    rect(462,294,86,134,c.guard?'#2f594c':'#4d342f');
+    rect(472,304,66,114,c.guard?'#53a082':'#915f48');
+    if(!c.guard){for(let y=312;y<415;y+=11){rect(470,y,70,4,'#b1765d');rect(468,y+1,7,2,'#4b3228')}}
+    else{for(let y=312;y<415;y+=12)rect(474,y,62,2,'#8ad7bd')}
+
+    // East command chamber with lava vents.
+    rect(680,224,195,236,'#382722');
+    for(let y=236;y<448;y+=13){rect(690,y,175,7,'#71463a');rect(702,y+2,140,2,'#b2674f')}
+    for(let x=700;x<860;x+=26){rect(x,248,8,198,'#2a1d1b')}
+    for(let i=0;i<16;i++){
+      const lx=704+i*10,ly=248+((i*41)%187),glow=i%3===0?'#ffb86d':'#f28e58';
+      rect(lx,ly,7,3,glow);
+      if(i%4===0)rect(lx+1,ly-3,2,3,'#ffd49e');
+    }
+
+    // Rail scratches and path highlights help navigation readability.
+    for(let x=104;x<950;x+=28){rect(x,476,14,1,'#3d4653');rect(x+2,478,9,1,'#5d6b78')}
+    for(let y=172;y<612;y+=44){rect(370,y,2,18,'#293341');rect(622,y+8,2,14,'#2f3948')}
+
+    // Ambient cave motes.
+    for(let i=0;i<24;i++){
+      const x=(i*79+clock*6)%WORLD.w;
+      const y=(i*53+Math.sin(clock*.8+i)*18+60)%WORLD.h;
+      rect(x,y,2,2,i%3===0?'#86a6ba88':'#6f859a66');
+    }
+
     const things=[...Underdeep.entities().map(n=>({...n,kind:'node'})),{...state.p,kind:'player'},{...state.dog,kind:'dog'}].sort((a,b)=>a.y-b.y);
     for(const n of things){
       if(n.kind==='player'||n.kind==='dog'){ellipse(n.x,n.y-1,11,4,'#0f162066');sprite(n.kind==='player'?'gray':'kenobi',n.x,n.y,2,n.kind==='player'&&state.p.dir<0);continue}
       if(n.type==='lift'){
-        rect(n.x-30,n.y-44,60,36,'#505b64');rect(n.x-26,n.y-40,52,28,'#84909a');rect(n.x-20,n.y-35,40,18,'#3e505e');rect(n.x-5,n.y-27,10,10,'#c9b173');
+        rect(n.x-30,n.y-44,60,36,'#4c5761');rect(n.x-26,n.y-40,52,28,'#87949f');rect(n.x-20,n.y-35,40,18,'#3a4d5c');
+        rect(n.x-5,n.y-27,10,10,'#d0ba7a');rect(n.x-22,n.y-12,44,3,'#9eb0bd');
       }else if(n.type==='forge'){
-        ellipse(n.x,n.y,24,8,'#3f3f3a');rect(n.x-15,n.y-15,30,11,'#6a5a3c');rect(n.x-8,n.y-22,16,18,'#dc7f47');rect(n.x-4,n.y-28,8,20,'#f4b05f');
+        ellipse(n.x,n.y,24,8,'#3f3f3a');rect(n.x-15,n.y-15,30,11,'#6a5a3c');
+        rect(n.x-8,n.y-22,16,18,'#dc7f47');rect(n.x-4,n.y-28,8,20,'#f4b05f');
+        rect(n.x-2,n.y-33,4,6,'#ffd596');
       }else if(n.type==='cache'){
         rect(n.x-14,n.y-20,28,20,'#3a3244');rect(n.x-12,n.y-18,24,14,c.cache?'#434f5e':'#9a7b52');rect(n.x-11,n.y-11,22,2,'#d6b37a');
-      }else if(n.type==='crystal'){
-        rect(n.x-18,n.y-34,36,31,'#4b5e69');rect(n.x-4,n.y-46,8,35,c.crystal?'#88ecf2':'#5d8795');rect(n.x-13,n.y-16,26,11,c.crystal?'#91e8cf':'#6d8f96');
-      }else if(n.type==='holo'){
-        ellipse(n.x,n.y,23,7,'#2a4a54');ctx.save();ctx.globalAlpha=.65+Math.sin(clock*3)*.1;sprite('cobris',n.x,n.y-17,1.55,false);ctx.restore();
       }else if(n.type==='sign'){
         rect(n.x-2,n.y-20,4,22,'#5f4d35');rect(n.x-16,n.y-30,32,13,'#987a4f');
-      }else{ellipse(n.x,n.y,13,4,'#251f2672');sprite(n.type,n.x,n.y,2.2,false,Math.sin(clock*2+n.x)*.4)}
-      const target=state.quest===0?'mortimer3':state.quest===1?'crystal':state.quest===2?'gateguard':state.quest===3?'tyrant':state.quest===5?'lift':null;
+      }else{
+        ellipse(n.x,n.y,13,4,'#251f2672');sprite(n.type,n.x,n.y,2.2,false,Math.sin(clock*2+n.x)*.4);
+      }
+      const target=state.quest===0?'mortimer3':state.quest===1?'prof3':state.quest===2?'sentry3':state.quest===3?'scales3':state.quest===5?'lift':null;
       if(n.id===target)marker(n.x,n.y-(n.id==='lift'?16:0));
     }
-    rect(70,612,886,8,'#313844');rect(72,612,882,2,'#6a7785');
+    rect(70,612,886,8,'#2f3744');rect(72,612,882,2,'#6f7e8d');
   },
   drawBattle(){
     const W=canvas.width,H=canvas.height,mid=H<500?H*.56:H*.44;
-    rect(0,0,W,H,'#2a1f23');
-    for(let y=0;y<H;y+=14)for(let x=0;x<W;x+=18){const r=rand(x,y);rect(x,y,18,14,r>.5?'#32242a':'#2c2026');if(r>.74)rect(x+4,y+9,5,2,'#5a4148')}
-    rect(0,H*.62,W,H*.38,'#4f2f2b');
-    for(let x=0;x<W;x+=20){rect(x,H*.66,11,4,'#d97d4c');rect(x+3,H*.70,8,2,'#8b4c35')}
+    rect(0,0,W,H,'#20171c');
+    for(let y=0;y<H;y+=14)for(let x=0;x<W;x+=18){
+      const r=rand(x,y),base=r>.5?'#302229':'#291d23';
+      rect(x,y,18,14,base);
+      if(r>.7)rect(x+3,y+8,6,2,'#554048');
+      if(r>.9)rect(x+9,y+3,2,2,'#6a5058');
+    }
+
+    // Molten front line with animated vent shimmer.
+    rect(0,H*.62,W,H*.38,'#4c2b28');
+    for(let x=0;x<W;x+=20){
+      const shift=Math.sin(clock*2+x*.04)*1.5;
+      rect(x,H*.66+shift,11,4,'#e08350');
+      rect(x+3,H*.70+shift,8,2,'#8f5139');
+      if(x%60===0)rect(x+4,H*.64+shift,3,2,'#ffd19a');
+    }
+
+    // Stalagmites and cave depth planes.
+    for(let x=0;x<W;x+=74){rect(x,H*.41,16,H*.21,'#2a1d22');rect(x+5,H*.39,6,8,'#3c2b31')}
+    rect(0,H*.34,W,10,'#3a2a31');
+
+    // Floating embers.
+    for(let i=0;i<26;i++){
+      const x=(i*53+clock*24)%W;
+      const y=(H*.58-((i*17+clock*12)%140));
+      rect(x,y,2,2,i%3===0?'#ffbf7b99':'#e38b6199');
+    }
+
     ellipse(W*.25,mid,44,11,'#1a111666');ellipse(W*.73,mid,50,12,'#1f131766');
     sprite('gray',W*.25,mid,3.5,false,Math.sin(clock*3));sprite('kenobi',W*.34,mid+29,3,false,Math.sin(clock*4));
-    sprite('snake',W*.73,mid-3,state.enemy.kind==='caveking'?5.1:4.3,true,Math.sin(clock*2));
+    sprite(state.enemy.kind==='burrowdroid'?'droid':'snake',W*.73,mid-3,state.enemy.kind==='scalesdeep'?5.1:4.3,true,Math.sin(clock*2));
+
     if(state.guard)for(let i=0;i<3;i++){rect(W*.4,mid-42+i*16,18,15,'#8d9d9f');rect(W*.4+2,mid-40+i*16,14,3,'#c4d0d0')}
     if(state.hitTime>0){ctx.font='bold 23px monospace';ctx.textAlign='center';ctx.fillStyle=state.hitTarget==='gray'?'#ffbd94':'#fff0ab';ctx.strokeStyle='#2a1918';ctx.lineWidth=3;const x=state.hitTarget==='gray'?W*.25:W*.73,y=mid-84-(1-state.hitTime)*15;ctx.strokeText(state.hitText,x,y);ctx.fillText(state.hitText,x,y)}
     if(state.flash>0)rect(0,0,W,H,'#ffd7bf20');
@@ -408,7 +481,7 @@ const Underdeep={
 };
 
 const NorthPole={
-  title:'The Midnight Aurora',
+  title:'The North Pole Accord',
   nodes:[
     {id:'sleigh',name:'Rescue sleigh',type:'sleigh',x:154,y:533},
     {id:'santa4',name:'Santa Claus',type:'santa',x:236,y:496},
@@ -417,17 +490,21 @@ const NorthPole={
     {id:'beacon-N',name:'Aurora Beacon North',type:'beacon',label:'N',x:472,y:180},
     {id:'beacon-W',name:'Aurora Beacon West',type:'beacon',label:'W',x:548,y:344},
     {id:'beacon-E',name:'Aurora Beacon East',type:'beacon',label:'E',x:622,y:224},
-    {id:'frostguard',name:'Blizzard Sentinel',type:'droid',x:592,y:356},
-    {id:'krampus',name:'Krampus, Frost Marshal',type:'snake',x:844,y:362},
-    {id:'aurora',name:'Aurora control spire',type:'holo',x:838,y:191},
+    {id:'polarcap',name:'Corporate Polar Captain',type:'droid',x:592,y:356},
+    {id:'cobris4',name:'Cobris, Six-Headed Snake King',type:'snake',x:844,y:362},
+    {id:'aurora',name:'Aurora command spire',type:'holo',x:838,y:191},
+    {id:'todd4',name:'Todd',type:'todd',x:266,y:502},
+    {id:'gil4',name:'Gilgamesh',type:'wizard',x:218,y:536},
+    {id:'hil4',name:'Hilgamesh',type:'hil',x:264,y:544},
+    {id:'dum4',name:'Dumbledore',type:'beard',x:312,y:548},
     {id:'polesign',name:'Polar marker',type:'sign',x:664,y:564}
   ],
   goals:[
     'Find Santa in the snowfield camp',
     'Light the three aurora beacons',
-    'Defeat the Blizzard Sentinel',
+    'Defeat the Corporate Polar Captain',
     'Enter the polar forge',
-    'Defeat Krampus at the forge heart',
+    'Defeat Cobris at the forge heart',
     'Return to the rescue sleigh',
     'The North Pole is secure.'
   ],
@@ -445,23 +522,23 @@ const NorthPole={
     hud();$('board-btn').focus();
   },
   theme(){
-    document.body.dataset.chapter='4';$('chapter-label').textContent='CHAPTER IV · THE MIDNIGHT AURORA';
+    document.body.dataset.chapter='4';$('chapter-label').textContent='CHAPTER IV · THE NORTH POLE ACCORD';
     document.querySelector('#location small').textContent='NORTH POLE CITADEL';
     $('location-name').textContent=NorthPole.location();
     document.querySelector('.chapter-note h2').textContent='The sky burns green above the ice.';
-    document.querySelector('.chapter-note p').textContent='Krampus seized the polar forge and bent the aurora beacons into a storm machine. If it ignites, winter will swallow Greenwood by dawn.';
-    document.title='The Kyle Chronicles · The Midnight Aurora';
+    document.querySelector('.chapter-note p').textContent='The Corporate Alliance struck the North Pole. Santa and the Daddy Republic need Kyle, Kenobi, and the Nut Brigade to relight the aurora defenses before Cobris freezes Greenwood.';
+    document.title='The Kyle Chronicles · The North Pole Accord';
     const intro=$('chapter-intro');
     intro.querySelector('.eyebrow').textContent='CHAPTER IV · THE FAR NORTH';
-    intro.querySelector('h2').textContent='The Midnight Aurora';
-    intro.querySelector('p').innerHTML='Across frozen fields, the beacons fail.<br>Light them, open the forge, and break the storm.';
+    intro.querySelector('h2').textContent='The North Pole Accord';
+    intro.querySelector('p').innerHTML='Santa’s elves hold the line in the snow.<br>Relight the beacons and face Cobris at the forge.';
   },
   board(){
     show('chapter-intro',false);state.mode='explore';show('location');show('objective');show('pause-btn');
-    say([['Santa','santa','Kyle, Kenobi, thank goodness. Krampus hijacked the aurora controls and locked the polar forge.'],['Santa','santa','Relight three beacons across the snowfield. That will drop his ice barrier. Then face him in the forge before the storm fully forms.'],['Kyle','gray','One last chapter. Let’s finish this.'],['Kenobi','kenobi','Woof!']]);
+      say([['Santa','santa','Kyle, Kenobi, thank goodness. The Corporate Alliance seized the polar forge.'],['Santa','santa','Relight the three aurora beacons. That drops the forge shield. Then stop Cobris before he turns this storm toward Greenwood.'],['Kyle','gray','One final stand. We finish it here.'],['Kenobi','kenobi','Woof! [Tail at maximum determination.]']]);
   },
   entities(){
-    return NorthPole.nodes.filter(n=>!(n.id==='frostguard'&&state.pole.guard)&&!(n.id==='krampus'&&state.pole.boss));
+    return NorthPole.nodes.filter(n=>!(n.id==='polarcap'&&state.pole.guard)&&!(n.id==='cobris4'&&state.pole.boss));
   },
   goal(){return NorthPole.goals[state.quest]},
   location(){return state.p.x>704?'Polar Forge':state.p.x>430?'Aurora Flats':'Snowfield Camp'},
@@ -477,8 +554,8 @@ const NorthPole={
   interact(n){
     const p=state.pole,lit=Object.values(p.beacons).filter(Boolean).length;
     if(n.id==='santa4'){
-      if(!p.briefed)say([['Santa','santa','Each beacon stabilizes one aurora channel. All three must be lit before the forge gate opens.'],['Kyle','gray','Got it. Light all three, then take down Krampus.']],()=>{p.briefed=true;state.quest=1;state.acorns+=10});
-      else say([['Santa','santa',p.boss?'The storm is fading! Bring everyone back to the sleigh.':lit<3?'Find and light all three beacons, hero.':'The forge barrier is down. Stop Krampus before he reignites it.']]);
+      if(!p.briefed)say([['Santa','santa','Each beacon stabilizes one aurora channel. All three must be lit before the forge gate opens.'],['Kyle','gray','Got it. Light all three, then take down Cobris.']],()=>{p.briefed=true;state.quest=1;state.acorns+=10});
+      else say([['Santa','santa',p.boss?'The storm is fading! Bring everyone back to the sleigh.':lit<3?'Find and light all three beacons, hero.':'The forge barrier is down. Stop Cobris before he restarts the storm lattice.']]);
     }else if(n.id==='lodge'){
       say([['Warming lodge','santa','Hot cocoa, dry gloves, and field medkits ready.'],['Kyle','gray','Health and focus restored.']],()=>{state.hp=state.maxHp;state.fp=state.maxFp});
     }else if(n.id==='stash4'){
@@ -492,96 +569,175 @@ const NorthPole={
       tone(440+now*90,.12);
       if(now===3)say([['Aurora network','squirrel','ALL CHANNELS STABLE. FORGE BARRIER DISPERSING.'],['Kyle','gray','Barrier is down. Sentinel next.']],()=>{state.quest=2;state.acorns+=18});
       else say([['Aurora beacon','squirrel',`Beacon ${n.label} online. ${now}/3 stabilized.`]]);
-    }else if(n.id==='frostguard'){
+    }else if(n.id==='polarcap'){
       if(lit<3)say([['Blizzard Sentinel','droid','FORGE ACCESS DENIED. AURORA NETWORK INCOMPLETE.']]);
-      else say([['Blizzard Sentinel','droid','NETWORK RESTORED. ENGAGING FINAL CONTAINMENT PROTOCOL.'],['Kyle','gray','No more containment.']],()=>beginBattle('frostguard'));
-    }else if(n.id==='krampus'){
-      if(!p.guard)say([['Krampus','snake','Bring me three beacons and still no courage? Come back when you can reach me.']]);
-      else say([['Krampus','snake','I will bury your little world beneath eternal winter.'],['Kyle','gray','Not while we are standing.'],['Kenobi','kenobi','Grrrr!']],()=>beginBattle('krampus'));
+      else say([['Corporate Polar Captain','droid','BEACONS STABLE. SWITCHING TO TERMINATION PROTOCOL.'],['Kyle','gray','Protocol canceled.']],()=>beginBattle('polarcaptain'));
+    }else if(n.id==='cobris4'){
+      if(!p.guard)say([['Cobris','cobris','Six heads. Six strategies. You will fail all of them.']]);
+      else say([['Cobris','cobris','You have chased my army through forests, ships, and tunnels. Here, winter itself obeys me.'],['Kyle','gray','Then we outplay winter.'],['Kenobi','kenobi','Grrrr! [Best-boy battle mode engaged.]']],()=>beginBattle('cobrisking'));
     }else if(n.id==='sleigh'){
       if(!p.boss)say([['Kyle','gray','Not yet. The forge is still active.']]);
       else if(!p.escaped)say([['Santa','santa','The aurora is stable, the forge is safe, and the storm is broken.'],['Kyle','gray','Then we go home.'],['Kenobi','kenobi','WOOF!']],()=>{p.escaped=true;state.quest=6;state.won=true;state.mode='victory';endScreen(true)});
       else say([['Kyle','gray','The sleigh is ready for one quiet ride home.']]);
     }else if(n.id==='aurora'){
       say([['Aurora spire','squirrel',p.boss?'The midnight sky softens to calm ribbons of green.':'The storm lattice hums, waiting for a command only the forge can give.']]);
+    }else if(n.id==='todd4'){
+      say([['Todd','todd',p.boss?'I slipped on ice and knocked the launch levers into lock mode. On purpose-ish.':'I am helping by not touching dangerous controls. Mostly.']]);
+    }else if(n.id==='gil4'){
+      say([['Gilgamesh','wizard','Todd has discovered three new kinds of trouble in snow. We are managing.']]);
+    }else if(n.id==='hil4'){
+      say([['Hilgamesh','hil','If we survive this, Todd is getting boots with fewer accidental magic properties.']]);
+    }else if(n.id==='dum4'){
+      say([['Dumbledore','beard','Santa asked me to keep the forge doors clear. Also to keep Todd away from large red buttons.']]);
     }else if(n.id==='polesign'){
       say([['Polar marker','squirrel','WEST: camp and lodge. CENTER: beacons. EAST: polar forge.']]);
     }
   },
   victory(kind){
     const p=state.pole;
-    if(kind==='frostguard'){
+    if(kind==='polarcaptain'){
       p.guard=true;state.quest=3;state.level=Math.max(state.level,5);state.maxHp=142;state.maxFp=10;state.hp=142;state.fp=10;state.acorns+=28;
-      say([['Blizzard Sentinel','droid','CONTAINMENT... FAILED.'],['Kyle','gray','Level five. Full health. Full focus. Time to end this storm.']]);
+      say([['Corporate Polar Captain','droid','DEFENSE GRID... OFFLINE.'],['Kyle','gray','Shield is down. Level five, full health, full focus. Cobris next.']]);
     }else{
       p.boss=true;state.quest=5;state.acorns+=60;state.fp=state.maxFp;
-      say([['Krampus','snake','The frost... obeys no one now...'],['Santa','santa','You did it! The aurora has stabilized and the forge is ours again.'],['Kyle','gray','Let’s get back to the sleigh, partner.']]);
+      say([['Cobris','cobris','Six heads... and still defeated by one child and one dog...'],['Todd','todd','I slipped and hit the emergency latch! All drone hangars just froze shut!'],['Santa','santa','Perfect timing, Todd. Kyle, Kenobi, you saved the North Pole and Greenwood. The Daddy Republic salutes you.']]);
     }
     hud();
   },
   end(win){
     $('end-eyebrow').textContent=win?'CHAPTER IV COMPLETE':'REGROUP AT THE WARMING LODGE';
     $('end-title').textContent=win?'Four chapters. One bright dawn.':'Warm up, then rejoin the fight.';
-    $('end-copy').textContent=win?`Krampus is defeated, the aurora is calm, and Greenwood is safe. Final haul: ${state.acorns} acorns across the full adventure.`:'Kenobi drags Kyle back to the warming lodge. Your beacon progress is safe. Build before heavy blows and press forward.';
+    $('end-copy').textContent=win?`Cobris is defeated, the aurora is calm, and Greenwood is safe. Final haul: ${state.acorns} acorns across the full adventure.`:'Kenobi drags Kyle back to the warming lodge. Your beacon progress is safe. Build before heavy blows and press forward.';
     $('end-btn').textContent=win?'Celebrate in the snowfield →':'Recover & try again →';
   },
   recover(){
     state.hp=state.maxHp;state.fp=state.maxFp;state.snacks=Math.max(state.snacks,4);state.p={x:318,y:565,dir:1};state.dog={x:292,y:574};state.busy=false;state.hitTime=0;nearest=null;
   },
   questHTML(){
-    const steps=['Find Santa in the snowfield camp.','Light the three aurora beacons.','Defeat the Blizzard Sentinel.','Enter the polar forge.','Defeat Krampus.','Return to the rescue sleigh.'];
+    const steps=['Find Santa in the snowfield camp.','Light the three aurora beacons.','Defeat the Corporate Polar Captain.','Enter the polar forge.','Defeat Cobris.','Return to the rescue sleigh.'];
     const lit=Object.values(state.pole.beacons).filter(Boolean).length;
-    return '<span class="eyebrow">CHAPTER IV</span><h3>The Midnight Aurora</h3><p>Save the North Pole from a storm machine and stop Krampus at the forge heart.</p>'+steps.map((t,i)=>`<div class="quest-step ${state.quest>i?'done':''}"><span>${state.quest>i?'✓':state.quest===i?'◇':'○'}</span><div>${t}</div></div>`).join('')+`<h3>Aurora status</h3><p>Beacons lit: ${lit}/3 · Forge barrier: ${state.pole.guard?'broken':'active'} · Krampus: ${state.pole.boss?'defeated':'active'}</p><h3>Your route</h3><p>WEST: sleigh, Santa, warming lodge. CENTER: beacon network. EAST: polar forge and Krampus.</p>`;
+    return '<span class="eyebrow">CHAPTER IV</span><h3>The North Pole Accord</h3><p>Save the North Pole from a storm machine and stop Cobris at the forge heart.</p>'+steps.map((t,i)=>`<div class="quest-step ${state.quest>i?'done':''}"><span>${state.quest>i?'✓':state.quest===i?'◇':'○'}</span><div>${t}</div></div>`).join('')+`<h3>Aurora status</h3><p>Beacons lit: ${lit}/3 · Forge barrier: ${state.pole.guard?'broken':'active'} · Cobris: ${state.pole.boss?'defeated':'active'}</p><h3>Your route</h3><p>WEST: sleigh, Santa, warming lodge. CENTER: beacon network. EAST: polar forge and Cobris.</p>`;
   },
   drawMap(){
     const p=state.pole;
-    rect(0,0,WORLD.w,WORLD.h,'#cde8f6');
-    for(let y=0;y<WORLD.h;y+=16)for(let x=0;x<WORLD.w;x+=16){
-      const r=rand(x,y),base=r>.5?'#d8eef9':'#c8e2f1';
-      rect(x,y,16,16,base);
-      if(r>.72)rect(x+3,y+5,2,2,'#e9f7ff');
-      if(r>.9)rect(x+11,y+9,2,1,'#a8cfdf');
+    rect(0,0,WORLD.w,WORLD.h,'#d3ecf9');
+
+    // Aurora ceiling and distant atmosphere.
+    for(let x=0;x<WORLD.w;x+=18){
+      const wave=Math.sin(clock*.6+x*.02)*6;
+      rect(x,20+wave,18,10,'#9fe8d980');
+      if(x%36===0)rect(x,32+wave,18,6,'#8fd9ff66');
     }
-    rect(80,500,312,92,'#8eb8cb');rect(92,512,286,68,'#f4f9fd');
+
+    for(let y=0;y<WORLD.h;y+=16)for(let x=0;x<WORLD.w;x+=16){
+      const r=rand(x,y),base=r>.5?'#dceff9':'#cde4f2';
+      rect(x,y,16,16,base);
+      if(r>.72)rect(x+3,y+5,2,2,'#eef8ff');
+      if(r>.9)rect(x+11,y+9,2,1,'#a9cfe1');
+    }
+
+    // Camp, beacon flats, and forge exterior.
+    rect(80,500,312,92,'#8eb8cb');rect(92,512,286,68,'#f4f9fd');rect(96,515,278,5,'#ffffffb3');
     rect(350,250,170,180,'#9cc5d9');for(let y=256;y<420;y+=11)rect(358,y,154,5,'#7ba7bc');
     rect(706,232,180,250,'#8aa9bb');rect(718,244,156,226,'#d5e9f4');
     for(let x=730;x<868;x+=18){rect(x,260,8,193,'#9fc2d4');rect(x+1,262,2,187,'#f7feff')}
-    if(!p.guard){rect(760,302,24,128,'#7db5cf');for(let y=308;y<424;y+=14)rect(761,y,22,4,'#e1f6ff')}
+
+    if(!p.guard){
+      rect(760,302,24,128,'#7db5cf');
+      for(let y=308;y<424;y+=14)rect(761,y,22,4,'#e1f6ff');
+    }else{
+      for(let y=306;y<426;y+=12)rect(762,y,20,3,'#8ff3d4');
+    }
+
     const lit=Object.values(p.beacons).filter(Boolean).length;
-    if(lit<3){rect(452,302,96,126,'#9ed0e6');for(let y=309;y<422;y+=10)rect(456,y,88,3,'#f2fbff')}
+    if(lit<3){
+      rect(452,302,96,126,'#9ed0e6');
+      for(let y=309;y<422;y+=10)rect(456,y,88,3,'#f2fbff');
+    }else{
+      for(let y=306;y<422;y+=9)rect(456,y,88,2,'#b7f7e2');
+    }
+
+    // Ice fissures and reflective lanes.
+    for(let x=110;x<930;x+=34){
+      const drift=Math.sin(clock*.8+x*.03)*2;
+      rect(x,470+drift,12,1,'#9ec0d2');
+      rect(x+2,472+drift,8,1,'#ecf8ff');
+    }
+
     const things=[...NorthPole.entities().map(n=>({...n,kind:'node'})),{...state.p,kind:'player'},{...state.dog,kind:'dog'}].sort((a,b)=>a.y-b.y);
     for(const n of things){
       if(n.kind==='player'||n.kind==='dog'){ellipse(n.x,n.y-1,11,4,'#4d738866');sprite(n.kind==='player'?'gray':'kenobi',n.x,n.y,2,n.kind==='player'&&state.p.dir<0);continue}
       if(n.type==='sleigh'){
         rect(n.x-46,n.y-36,92,22,'#b34c3f');rect(n.x-37,n.y-51,74,22,'#f4efe2');rect(n.x-25,n.y-60,50,18,'#cf4b45');rect(n.x-52,n.y-13,102,6,'#a27c3e');
+        rect(n.x-30,n.y-8,60,2,'#efdcb5');
       }else if(n.type==='lodge'){
         rect(n.x-27,n.y-31,54,28,'#866246');rect(n.x-31,n.y-43,62,14,'#f0f4f8');rect(n.x-8,n.y-21,16,18,'#d08d4d');
+        rect(n.x-6,n.y-17,12,9,'#ffd091');
       }else if(n.type==='stash'){
         rect(n.x-13,n.y-19,26,18,'#54697a');rect(n.x-11,n.y-17,22,12,p.stash?'#3d5160':'#9c8256');rect(n.x-10,n.y-11,20,2,'#e2c68a');
       }else if(n.type==='beacon'){
         const on=p.beacons[n.label];
         rect(n.x-7,n.y-34,14,31,'#6e8798');rect(n.x-3,n.y-44,6,13,on?'#8be8ff':'#6ca5bf');rect(n.x-11,n.y-11,22,9,on?'#8bf3d8':'#8aa0ad');
+        if(on){
+          for(let h=0;h<5;h++)rect(n.x-1-h,n.y-58-h*6,2+h*2,4,'#9ef7ff66');
+        }
         Ship.label(n.label,n.x,n.y+10,on?'#46d8ff':'#6b8fa4',11);
       }else if(n.type==='holo'){
         ellipse(n.x,n.y,22,7,'#6fb5cf');ctx.save();ctx.globalAlpha=.65+Math.sin(clock*3)*.1;sprite('cobris',n.x,n.y-15,1.5,false);ctx.restore();
       }else if(n.type==='sign'){
         rect(n.x-2,n.y-20,4,22,'#7a633c');rect(n.x-16,n.y-30,32,12,'#b49a67');
       }else{ellipse(n.x,n.y,13,4,'#4e6f8572');sprite(n.type,n.x,n.y,2.2,false,Math.sin(clock*2+n.x)*.4)}
-      const target=state.quest===0?'santa4':state.quest===1?(p.beacons.N?'beacon-W':p.beacons.W?'beacon-E':'beacon-N'):state.quest===2?'frostguard':state.quest===3?'krampus':state.quest===5?'sleigh':null;
+      const target=state.quest===0?'santa4':state.quest===1?(p.beacons.N?'beacon-W':p.beacons.W?'beacon-E':'beacon-N'):state.quest===2?'polarcap':state.quest===3?'cobris4':state.quest===5?'sleigh':null;
       if(n.id===target)marker(n.x,n.y-(n.id==='sleigh'?18:0));
     }
-    for(let i=0;i<16;i++){let x=(i*121+Math.sin(clock*.6+i)*20)%WORLD.w,y=(i*63+clock*8)%WORLD.h;rect(x,y,2,2,i%2?'#ffffffbb':'#d9eff8aa')}
+
+    // Snow drift.
+    for(let i=0;i<28;i++){
+      const x=(i*117+Math.sin(clock*.6+i)*24)%WORLD.w;
+      const y=(i*63+clock*8)%WORLD.h;
+      rect(x,y,2,2,i%2?'#ffffffbb':'#d9eff8aa');
+    }
     rect(72,612,880,8,'#7ca8be');rect(74,612,876,2,'#e6f7ff');
   },
   drawBattle(){
     const W=canvas.width,H=canvas.height,mid=H<500?H*.56:H*.44;
-    rect(0,0,W,H,'#b6d7e6');
-    for(let y=0;y<H;y+=14)for(let x=0;x<W;x+=18){const r=rand(x,y);rect(x,y,18,14,r>.5?'#c4e0ec':'#b2d2e2');if(r>.74)rect(x+4,y+9,5,2,'#dff2fb')}
-    rect(0,H*.62,W,H*.38,'#95b6c8');
-    for(let x=0;x<W;x+=22){rect(x,H*.68,12,3,'#f4fcff');rect(x+3,H*.70,8,2,'#7ca3b7')}
+    rect(0,0,W,H,'#b3d8ea');
+
+    // Aurora ribbons in the battle sky.
+    for(let x=0;x<W;x+=20){
+      const wave=Math.sin(clock*1.1+x*.03)*7;
+      rect(x,20+wave,20,8,'#9ff2de70');
+      if(x%40===0)rect(x,31+wave,20,5,'#a7dcff66');
+    }
+
+    for(let y=0;y<H;y+=14)for(let x=0;x<W;x+=18){
+      const r=rand(x,y),base=r>.5?'#c7e3ef':'#b4d5e5';
+      rect(x,y,18,14,base);
+      if(r>.72)rect(x+4,y+9,5,2,'#e6f5fc');
+      if(r>.9)rect(x+10,y+3,3,2,'#95bfd0');
+    }
+
+    rect(0,H*.62,W,H*.38,'#93b6c8');
+    for(let x=0;x<W;x+=22){
+      const drift=Math.sin(clock*2+x*.05)*1.2;
+      rect(x,H*.68+drift,12,3,'#f7fcff');
+      rect(x+3,H*.70+drift,8,2,'#7ca3b7');
+    }
+
+    // Forge walls and reflective ice pillars.
+    for(let x=0;x<W;x+=84){rect(x,H*.38,14,H*.24,'#89a8ba');rect(x+4,H*.4,4,H*.2,'#dff3ff99')}
+
+    // Slow snowfall for motion and depth.
+    for(let i=0;i<32;i++){
+      const x=(i*59+clock*18)%W;
+      const y=(i*43+clock*10)%H;
+      rect(x,y,2,2,i%2?'#ffffffc2':'#d8eef8aa');
+    }
+
     ellipse(W*.25,mid,44,11,'#4f718666');ellipse(W*.73,mid,50,12,'#4a687966');
     sprite('gray',W*.25,mid,3.5,false,Math.sin(clock*3));sprite('kenobi',W*.34,mid+29,3,false,Math.sin(clock*4));
-    sprite(state.enemy.kind==='krampus'?'snake':'droid',W*.73,mid-3,state.enemy.kind==='krampus'?5:4.2,true,Math.sin(clock*2));
+    sprite(state.enemy.kind==='cobrisking'?'snake':'droid',W*.73,mid-3,state.enemy.kind==='cobrisking'?5:4.2,true,Math.sin(clock*2));
+
     if(state.guard)for(let i=0;i<3;i++){rect(W*.4,mid-42+i*16,18,15,'#8d9d9f');rect(W*.4+2,mid-40+i*16,14,3,'#c4d0d0')}
     if(state.hitTime>0){ctx.font='bold 23px monospace';ctx.textAlign='center';ctx.fillStyle=state.hitTarget==='gray'?'#ffbd94':'#fff0ab';ctx.strokeStyle='#355162';ctx.lineWidth=3;const x=state.hitTarget==='gray'?W*.25:W*.73,y=mid-84-(1-state.hitTime)*15;ctx.strokeText(state.hitText,x,y);ctx.fillText(state.hitText,x,y)}
     if(state.flash>0)rect(0,0,W,H,'#f4fdff30');
