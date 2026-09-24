@@ -119,7 +119,12 @@ function hud(){
  $('dog-status').textContent=state.mode==='battle'?'I’ve got your back.':'Ready for anything.';
  $('objective').textContent=questTitle();
 }
-function questTitle(){return state.chapter===2?Ship.goal():['Find Mortimer beside his burrow','Meet Professor Nutty on the east path','Defeat the Alliance Sentry by the bridge','Cross the bridge and confront Scales','Greenwood is safe. For now.'][state.quest]}
+function questTitle(){
+ if(state.chapter===2)return Ship.goal();
+ if(state.chapter===3)return Underdeep.goal();
+ if(state.chapter===4)return NorthPole.goal();
+ return ['Find Mortimer beside his burrow','Meet Professor Nutty on the east path','Defeat the Alliance Sentry by the bridge','Cross the bridge and confront Scales','Greenwood is safe. For now.'][state.quest];
+}
 function start(){
  fresh();state.mode='explore';show('title-screen',false);show('location');show('objective');show('pause-btn');hud();canvas.focus();
  say([['Kyle','gray','A quiet walk, a little fencing practice, and absolutely no saving the world. Sound good, Kenobi?'],['Kenobi','kenobi','Woof! [He immediately hears someone panicking beside the burrow to the northeast.]'],['Kyle','gray','Okay. One tiny detour. Use WASD or the arrow keys to walk, then press E near someone to talk.']]);
@@ -132,11 +137,18 @@ function nextLine(){
  if(dialogQueue.length){let [name,type,text]=dialogQueue.shift();$('dialog-name').textContent=name;$('dialog-text').textContent=text;$('dialog-portrait').src=(sprites[type]||sprites.gray).toDataURL();tone(440,.025);return}
  show('dialog',false);state.mode='explore';let fn=afterDialog;afterDialog=null;if(fn)fn();hud();canvas.focus();
 }
-function availableNPCs(){return state.chapter===2?Ship.entities():npcs.filter(n=>!(n.id==='droid'&&state.droid)&&!(n.id==='scales'&&state.scales))}
+function availableNPCs(){
+ if(state.chapter===2)return Ship.entities();
+ if(state.chapter===3)return Underdeep.entities();
+ if(state.chapter===4)return NorthPole.entities();
+ return npcs.filter(n=>!(n.id==='droid'&&state.droid)&&!(n.id==='scales'&&state.scales));
+}
 function interact(){
  if(state.mode==='dialog'){nextLine();return}if(state.mode!=='explore')return;
  let n=nearest;if(!n)return;
  if(state.chapter===2){Ship.interact(n);return}
+ if(state.chapter===3){Underdeep.interact(n);return}
+ if(state.chapter===4){NorthPole.interact(n);return}
  if(n.id==='mole'){
    if(state.quest===0)say([['Mortimer Mole','mole','Oh dear. Oh dear. I thought those marching droids were unusually shiny worms. My glasses are NOT helping.'],['Kyle','gray','Droids? Here in Greenwood?'],['Mortimer Mole','mole','The Corporate Alliance! They want our bridge. Professor Nutty is gathering the Nut Brigade along the path to the east. Please find him!'],['Kenobi','kenobi','[Kenobi gently nudges Mortimer’s glasses back onto his nose.]'],['Mortimer Mole','mole','Thank you, brave... rather fluffy person. Take these emergency acorns. I prefer squiggly worms anyway.']],()=>{state.quest=1;state.acorns+=5});
    else say([['Mortimer Mole','mole',state.won?'The bridge is safe? Wonderful! I can get back to being nervous about normal things. Like especially wiggly worms.':'The professor is east along the path. He has a helmet. Or a very shiny walnut. Hard to tell.']]);
@@ -165,7 +177,7 @@ function interact(){
 }
 function beginBattle(kind){
  state.mode='battle';state.busy=false;state.guard=false;state.hitTime=0;state.flash=0;state.hitTarget=null;
- const enemies={droid:{name:'ALLIANCE SENTRY',hp:78},scales:{name:'SCALES · THE KING’S RIGHT HAND',hp:138},b2:{name:'B2 HEAVY SENTRY',hp:140},b2captain:{name:'B2 COMMANDER · BULWARK',hp:205}};
+ const enemies={droid:{name:'ALLIANCE SENTRY',hp:78},scales:{name:'SCALES · THE KING’S RIGHT HAND',hp:138},b2:{name:'B2 HEAVY SENTRY',hp:140},b2captain:{name:'B2 COMMANDER · BULWARK',hp:205},caveguard:{name:'BURROW WARDEN',hp:172},caveking:{name:'THE HOLLOW TYRANT',hp:235},frostguard:{name:'BLIZZARD SENTINEL',hp:205},krampus:{name:'KRAMPUS · FROST MARSHAL',hp:272}};
  const enemy=enemies[kind];state.enemy={kind,...enemy,max:enemy.hp,turn:0};
  show('dialog',false);show('location',false);show('objective',false);show('pause-btn',false);show('nearby',false);show('battle-ui');
  $('battle-log').textContent='Kyle’s turn. Choose a move. Kenobi will follow your lead.';
@@ -192,7 +204,8 @@ function enemyTurn(){
  const e=state.enemy;const heavy=e.turn%3===2,isB2=e.kind.startsWith('b2');
  let raw=isB2?(e.kind==='b2captain'?(heavy?32:18):(heavy?27:16)):(e.kind==='droid'?12:(heavy?23:16)),hit=state.guard?Math.ceil(raw*.25):raw;
  state.hp=Math.max(0,state.hp-hit);e.turn++;state.hitText='−'+hit;state.hitTime=.8;state.hitTarget='gray';
- $('battle-log').textContent=(state.guard?'The block fort absorbs most of the blow. ':isB2?(heavy?'The B2 fires its charged arm cannon. ':'The B2 fires a wrist-blaster burst. '):e.kind==='droid'?'The sentry swings its clanking arm. ':e.turn%3===0?'Scales lashes out with his tail. ':'Scales strikes with his silver saber. ')+`Kyle takes ${hit} damage. `+(isB2&&e.turn%3===2?'CANNON CHARGING! Block Fort will reduce the next hit.':'Your turn!');
+ const enemyLine=isB2?(heavy?'The B2 fires its charged arm cannon. ':'The B2 fires a wrist-blaster burst. '):e.kind==='droid'?'The sentry swings its clanking arm. ':e.kind==='caveguard'?(heavy?'The Burrow Warden whips a crushing tail strike. ':'The Burrow Warden jabs with a chipped spear. '):e.kind==='caveking'?(heavy?'The Hollow Tyrant slams both coils into the stone. ':'The Hollow Tyrant lunges through the steam. '):e.kind==='frostguard'?(heavy?'The Blizzard Sentinel crashes forward with an ice maul. ':'The Blizzard Sentinel fires a burst of frozen shards. '):e.kind==='krampus'?(heavy?'Krampus unleashes a blizzard hammer swing. ':'Krampus lashes out with frost chains. '):e.turn%3===0?'Scales lashes out with his tail. ':'Scales strikes with his silver saber. ';
+ $('battle-log').textContent=(state.guard?'The block fort absorbs most of the blow. ':enemyLine)+`Kyle takes ${hit} damage. `+(isB2&&e.turn%3===2?'CANNON CHARGING! Block Fort will reduce the next hit.':'Your turn!');
  state.guard=false;state.busy=false;tone(147,.14);battleHud();
  if(state.hp<=0){state.mode='defeat';show('battle-ui',false);endScreen(false)}
 }
@@ -201,6 +214,8 @@ function winBattle(){
  if(sound&&score)score.cueVictory();
  tone(392,.1);tone(494,.1,.12);tone(587,.1,.24);tone(784,.3,.36);
  if(kind.startsWith('b2')){Ship.victory(kind);return}
+ if(state.chapter===3){Underdeep.victory(kind);return}
+ if(state.chapter===4){NorthPole.victory(kind);return}
  if(kind==='droid'){state.droid=true;state.quest=3;state.level=2;state.maxHp=95;state.hp=95;state.acorns+=15;
  say([['Kyle','gray','Checkmate. Well... check-droid.'],['Professor Nutty','squirrel','Splendid! Level two, full health, and fifteen acorns. Cross Oakbridge and stop Scales before his reinforcements arrive.']]);
  }else{state.scales=true;state.quest=4;state.won=true;state.acorns+=30;
@@ -210,6 +225,8 @@ function winBattle(){
 function endScreen(win){
  show('end-screen');show('location',false);show('objective',false);show('pause-btn',false);
  if(state.chapter===2){Ship.end(win);return}
+ if(state.chapter===3){Underdeep.end(win);return}
+ if(state.chapter===4){NorthPole.end(win);return}
  $('end-eyebrow').textContent=win?'CHAPTER I COMPLETE':'EVERY HERO GETS BACK UP';
  $('end-title').textContent=win?'Small heroes. A mighty beginning.':'A little rest. Another chance.';
  $('end-copy').textContent=win?`Oakbridge is safe, and you collected ${state.acorns} acorns. But Santa has urgent news: the Corporate Alliance battleship Iron Serpent is targeting Greenwood. Your adventure continues aboard it.`:'Kenobi guides Kyle back to the campfire. Take a breath, restore your courage, and try using Block Fort before a heavy attack.';
@@ -217,12 +234,16 @@ function endScreen(win){
 }
 function resumeWorld(){
  if(state.chapter===1&&state.won){Ship.start(false);return}
+ if(state.chapter===2&&state.won){Underdeep.start(false);return}
+ if(state.chapter===3&&state.won){NorthPole.start(false);return}
  const won=state.won;state.mode='explore';show('end-screen',false);show('location');show('objective');show('pause-btn');
- if(!won){if(state.chapter===2)Ship.recover();else{state.hp=state.maxHp;state.fp=state.maxFp;state.p={x:226,y:496,dir:1};state.dog={x:205,y:510};state.snacks=Math.max(state.snacks,2)}}
+ if(!won){if(state.chapter===2)Ship.recover();else if(state.chapter===3)Underdeep.recover();else if(state.chapter===4)NorthPole.recover();else{state.hp=state.maxHp;state.fp=state.maxFp;state.p={x:226,y:496,dir:1};state.dog={x:205,y:510};state.snacks=Math.max(state.snacks,2)}}
  hud();canvas.focus();
 }
 function collides(x,y){
  if(state.chapter===2)return Ship.collides(x,y);
+ if(state.chapter===3)return Underdeep.collides(x,y);
+ if(state.chapter===4)return NorthPole.collides(x,y);
  if(x<28||x>WORLD.w-28||y<50||y>WORLD.h-25)return true;
  if(x>698&&x<763&&!(y>316&&y<385))return true;
  if(x>145&&x<270&&y>287&&y<357)return true;
@@ -243,7 +264,7 @@ function update(dt){
  if(dd>25){state.dog.x+=(state.p.x-state.dog.x)/dd*Math.min(dd-25,speed*dt*1.15);state.dog.y+=(state.p.y-state.dog.y)/dd*Math.min(dd-25,speed*dt*1.15)}
  nearest=availableNPCs().map(n=>({...n,d:Math.hypot(n.x-state.p.x,n.y-state.p.y)})).filter(n=>n.d<48).sort((a,b)=>a.d-b.d)[0]||null;
  show('nearby',!!nearest);if(nearest)$('nearby').innerHTML=`<kbd>E</kbd> ${nearest.name}`;
- $('location-name').textContent=state.chapter===2?Ship.location():state.p.x>760?'Oakbridge Outpost':state.p.x>530?'The East Road':'Mossbrook Clearing';
+ $('location-name').textContent=state.chapter===2?Ship.location():state.chapter===3?Underdeep.location():state.chapter===4?NorthPole.location():state.p.x>760?'Oakbridge Outpost':state.p.x>530?'The East Road':'Mossbrook Clearing';
 }
 function rect(x,y,w,h,c){ctx.fillStyle=c;ctx.fillRect(Math.round(x),Math.round(y),Math.ceil(w),Math.ceil(h))}
 function ellipse(x,y,rx,ry,c){ctx.fillStyle=c;ctx.beginPath();ctx.ellipse(Math.round(x),Math.round(y),rx,ry,0,0,Math.PI*2);ctx.fill()}
@@ -280,6 +301,8 @@ function marker(x,y){
 }
 function drawMap(){
  if(state.chapter===2){Ship.drawMap();return}
+ if(state.chapter===3){Underdeep.drawMap();return}
+ if(state.chapter===4){NorthPole.drawMap();return}
  rect(0,0,WORLD.w,WORLD.h,'#547f43');
  for(let y=0;y<WORLD.h;y+=16)for(let x=0;x<WORLD.w;x+=16){
    let r=rand(x,y);
@@ -308,6 +331,8 @@ function drawMap(){
 }
 function drawBattle(){
  if(state.chapter===2){Ship.drawBattle();return}
+ if(state.chapter===3){Underdeep.drawBattle();return}
+ if(state.chapter===4){NorthPole.drawBattle();return}
  const W=canvas.width,H=canvas.height;
  rect(0,0,W,H,'#305641');
  for(let y=0;y<H;y+=12)for(let x=0;x<W;x+=16){let r=rand(x,y);rect(x,y,16,12,r>.5?'#375f44':'#3c6746');if(r>.65)rect(x+4,y+7,4,2,'#5e814c')}
@@ -350,13 +375,15 @@ function openModal(type){
  if(state.mode==='modal'){closeModal();return}modalReturn=state.mode;state.mode='modal';Object.keys(keys).forEach(k=>keys[k]=false);show('modal-backdrop');show('book-tabs',type==='book');
  if(type==='book'){$('modal-title').textContent='The storybook';bookTab('quest')}
  else if(type==='pause'){$('modal-title').textContent='Take a little breather.';$('book-content').innerHTML='<p>Kyle and Kenobi will be right here. Your adventure is paused.</p><p>Progress lasts until this page is refreshed.</p><button class="resume-button" id="resume-btn">Return to adventure</button>';$('resume-btn').onclick=closeModal}
- else{$('modal-title').textContent='A field guide to adventure';$('book-content').innerHTML=`<h3>${state.chapter===2?'Explore the Iron Serpent':'Explore Greenwood'}</h3><p><kbd>W A S D</kbd> or arrow keys to move. <kbd>E</kbd> or <kbd>Space</kbd> to talk, read, collect, or rest. On a phone, use the direction pad and Interact button.</p><h3>Follow the golden marker</h3><p>${state.chapter===2?'Hear Santa’s transmission in the hangar. Rescue the scout, disable the targeting relays, then reach the command bridge.':'Start with Mortimer near his burrow. Professor Nutty will help you plan your next move.'} Walk close to a character or console, then interact.</p><h3>Think before you strike</h3><p>Battles wait for you. Use the four buttons or keys 1–4. Fencing is free. Knight’s Gambit costs 3 focus. Block Fort reduces the next hit and restores 2 focus. Snacks restore health. Kenobi automatically assists every attack.${state.chapter===2?' B2 droids charge their cannon every third turn. Watch for the warning and block the next shot.':''}</p><h3>Rest and regroup</h3><p>${state.chapter===2?'The hangar medical station restores health and focus. Losing brings you back there without resetting your mission.':'The campfire restores health and focus. Losing a battle takes you safely back to camp.'} Press <kbd>J</kbd> for your storybook or <kbd>Esc</kbd> to pause. Sound starts only if you enable it.</p>`}
+ else{$('modal-title').textContent='A field guide to adventure';$('book-content').innerHTML=`<h3>${state.chapter===2?'Explore the Iron Serpent':state.chapter===3?'Explore the Underdeep Caverns':state.chapter===4?'Explore the North Pole Citadel':'Explore Greenwood'}</h3><p><kbd>W A S D</kbd> or arrow keys to move. <kbd>E</kbd> or <kbd>Space</kbd> to talk, read, collect, or rest. On a phone, use the direction pad and Interact button.</p><h3>Follow the golden marker</h3><p>${state.chapter===2?'Hear Santa’s transmission in the hangar. Rescue the scout, disable the targeting relays, then reach the command bridge.':state.chapter===3?'Find Mortimer underground, power the crystal gate, and stop the Hollow Tyrant in the magma vault.':state.chapter===4?'Find Santa in the snowfield, restore three aurora beacons, then stop Krampus at the polar forge.':'Start with Mortimer near his burrow. Professor Nutty will help you plan your next move.'} Walk close to a character or console, then interact.</p><h3>Think before you strike</h3><p>Battles wait for you. Use the four buttons or keys 1–4. Fencing is free. Knight’s Gambit costs 3 focus. Block Fort reduces the next hit and restores 2 focus. Snacks restore health. Kenobi automatically assists every attack.${state.chapter===2?' B2 droids charge their cannon every third turn. Watch for the warning and block the next shot.':state.chapter===3?' Burrow beasts hit hardest every third turn, so timing your block fort matters.':state.chapter===4?' Frost elites slam hardest every third turn. Keep enough focus to fortify before heavy hits.':''}</p><h3>Rest and regroup</h3><p>${state.chapter===2?'The hangar medical station restores health and focus. Losing brings you back there without resetting your mission.':state.chapter===3?'The forge camp restores health and focus. Losing returns you there while keeping mission progress.':state.chapter===4?'The warming lodge restores health and focus. Losing returns you there while keeping beacon progress.':'The campfire restores health and focus. Losing a battle takes you safely back to camp.'} Press <kbd>J</kbd> for your storybook or <kbd>Esc</kbd> to pause. Sound starts only if you enable it.</p>`}
  $('modal-close').focus();
 }
 function closeModal(){show('modal-backdrop',false);state.mode=modalReturn;canvas.focus()}
 function bookTab(tab){
  document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
  if(tab==='quest'&&state.chapter===2){$('book-content').innerHTML=Ship.questHTML();return}
+ if(tab==='quest'&&state.chapter===3){$('book-content').innerHTML=Underdeep.questHTML();return}
+ if(tab==='quest'&&state.chapter===4){$('book-content').innerHTML=NorthPole.questHTML();return}
  if(tab==='quest'){
  const steps=['Speak to Mortimer at his burrow.','Meet Professor Nutty along the east path.','Defeat the Alliance Sentry at Oakbridge.','Cross the bridge and defeat Scales.'];
  $('book-content').innerHTML='<span class="eyebrow">CHAPTER I</span><h3>The Acorn Accord</h3><p>A frightened mole. A stolen bridge. An unlikely alliance.</p>'+steps.map((s,i)=>`<div class="quest-step ${state.quest>i?'done':''}"><span>${state.quest>i?'✓':state.quest===i?'◇':'○'}</span><div>${s}</div></div>`).join('')+'<h3>Supplies & helpful places</h3><p>Find the supply chest east of Mortimer for extra snacks. The campfire south of the cottage restores health and focus. Talk to the wizards, the Republic scout, and Todd along the way.</p>';
@@ -399,6 +426,8 @@ function keydown(e){
 initSprites();fresh();hud();
 $('start-btn').onclick=start;$('dialog-next').onclick=nextLine;$('journal-btn').onclick=()=>openModal('book');$('help-btn').onclick=()=>openModal('help');$('pause-btn').onclick=()=>openModal('pause');$('modal-close').onclick=closeModal;$('sound-btn').onclick=toggleSound;$('end-btn').onclick=resumeWorld;$('touch-interact').onclick=interact;
 $('chapter2-btn').onclick=()=>Ship.start(true);$('board-btn').onclick=()=>Ship.board();
+$('chapter3-btn').onclick=()=>Underdeep.start(true);
+$('chapter4-btn').onclick=()=>NorthPole.start(true);
 document.querySelectorAll('[data-action]').forEach(b=>b.onclick=()=>action(b.dataset.action));
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>bookTab(b.dataset.tab));
 document.querySelectorAll('[data-dir]').forEach(b=>{b.onpointerdown=e=>{e.preventDefault();b.setPointerCapture(e.pointerId);keys[b.dataset.dir]=true};b.onpointerup=b.onpointercancel=b.onlostpointercapture=()=>keys[b.dataset.dir]=false});
@@ -407,4 +436,4 @@ $('modal-backdrop').onclick=e=>{if(e.target===$('modal-backdrop'))closeModal()};
 new ResizeObserver(()=>{const r=$('stage').getBoundingClientRect();canvas.width=r.width<600?480:640;canvas.height=Math.round(canvas.width*r.height/r.width);render()}).observe($('stage'));
 function loop(t){let dt=Math.min((t-last)/1000,.05);last=t;update(dt);render();frameCount++;if(t-fpsLast>1000){fps=Math.round(frameCount*1000/(t-fpsLast));$('perf').textContent=`${fps} FPS`;frameCount=0;fpsLast=t}requestAnimationFrame(loop)}requestAnimationFrame(loop);
 window.advanceTime=ms=>{for(let i=0;i<Math.ceil(ms/16.667);i++)update(1/60);render()};
-window.render_game_to_text=()=>JSON.stringify({mode:state.mode,chapter:state.chapter,coordinates:'world pixels; origin top-left, x right, y down',player:{x:Math.round(state.p.x),y:Math.round(state.p.y)},dog:{x:Math.round(state.dog.x),y:Math.round(state.dog.y)},hp:state.hp,maxHp:state.maxHp,focus:state.fp,snacks:state.snacks,acorns:state.acorns,level:state.level,quest:state.quest,objective:questTitle(),nearby:nearest?.id||null,dialog:state.mode==='dialog'?$('dialog-text').textContent:null,enemy:state.mode==='battle'?state.enemy:null,busy:state.busy,droidDefeated:state.droid,scalesDefeated:state.scales,won:state.won,ship:state.ship||null,entities:availableNPCs().map(({id,x,y})=>({id,x,y})),obstacles:state.chapter===2?'Walkable hull x62–964/y140–606. Bulkheads x333–363 and x685–715 have doors at y325–391. First unlocks after sentry; second after relays. Reactor x477–568/y150–268; brig wall x473–579/y437–483; shuttle x91–199/y283–334.':'Cottage x145–270/y287–357; stream x698–763, bridge y316–385; sentry gate x671–690 until sentry defeated; trees around clearing edges'});
+window.render_game_to_text=()=>JSON.stringify({mode:state.mode,chapter:state.chapter,coordinates:'world pixels; origin top-left, x right, y down',player:{x:Math.round(state.p.x),y:Math.round(state.p.y)},dog:{x:Math.round(state.dog.x),y:Math.round(state.dog.y)},hp:state.hp,maxHp:state.maxHp,focus:state.fp,snacks:state.snacks,acorns:state.acorns,level:state.level,quest:state.quest,objective:questTitle(),nearby:nearest?.id||null,dialog:state.mode==='dialog'?$('dialog-text').textContent:null,enemy:state.mode==='battle'?state.enemy:null,busy:state.busy,droidDefeated:state.droid,scalesDefeated:state.scales,won:state.won,ship:state.ship||null,cave:state.cave||null,pole:state.pole||null,entities:availableNPCs().map(({id,x,y})=>({id,x,y})),obstacles:state.chapter===2?'Walkable hull x62–964/y140–606. Bulkheads x333–363 and x685–715 have doors at y325–391. First unlocks after sentry; second after relays. Reactor x477–568/y150–268; brig wall x473–579/y437–483; shuttle x91–199/y283–334.':state.chapter===3?'Walkable cavern x68–956/y118–620. Crystal gate x470–540 blocks passage until energized. Magma pit x688–864/y248–452 and collapsed wall x274–364/y248–404 are blocked terrain.':state.chapter===4?'Walkable icefield x72–950/y112–622. Frozen gate x452–548 stays closed until all beacons are lit. Glacier crevasse x338–520/y226–452 and forge wall x700–862/y248–470 are blocked terrain.':'Cottage x145–270/y287–357; stream x698–763, bridge y316–385; sentry gate x671–690 until sentry defeated; trees around clearing edges'});
