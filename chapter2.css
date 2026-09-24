@@ -4,8 +4,9 @@
 .title-content{margin-top:0;padding:16px 14px 24px;max-height:100%}
 .title-content .gold-button{margin-top:18px;margin-bottom:10px}
 .chapter-jump{display:block;width:min(92%,520px);margin-top:10px}
-.chapter-intro{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff0d0;background:linear-gradient(#0b1e329e,#10284065),url('./assets/battleship.webp') center/cover;padding:28px;gap:23px;overflow:hidden;isolation:isolate}
+.chapter-intro{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#fff0d0;background:linear-gradient(#0b1e329e,#10284065),url('./assets/battleship.webp') center/cover;padding:28px;gap:23px;overflow:hidden;isolation:isolate;filter:saturate(1.1) contrast(1.02)}
 .chapter-intro::before{content:'';position:absolute;inset:-12%;background:radial-gradient(42% 28% at 22% 34%,#ffffff26 0%,#0000 72%),radial-gradient(36% 30% at 76% 24%,#8be6ff2f 0%,#0000 70%),linear-gradient(180deg,#0f253640 0%,#0000 34%,#0613216e 100%);mix-blend-mode:screen;opacity:.62;animation:intro-drift 14s ease-in-out infinite;pointer-events:none;z-index:0}
+.chapter-intro::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,transparent 52%,rgba(9,15,23,.46) 100%);pointer-events:none;z-index:0}
 .chapter-intro > *{position:relative;z-index:1}
 .chapter-intro .eyebrow{color:#f3d39a;font-size:12px;max-width:440px;line-height:1.7;text-shadow:0 2px 5px #132534}
 .chapter-intro h2{font:600 clamp(45px,5.8vw,76px)/1 var(--font-display);letter-spacing:-1px;text-shadow:0 3px 0 #1d3143,0 6px 20px #0c1e33}
@@ -21,6 +22,7 @@ body[data-chapter="3"] .chapter-intro{
 body[data-chapter="3"] .chapter-intro::before{background:radial-gradient(40% 28% at 22% 76%,#ffbe6f33 0%,#0000 72%),radial-gradient(34% 22% at 80% 28%,#80e1f72b 0%,#0000 72%),linear-gradient(180deg,#120f1666 0%,#0000 38%,#0d0f1669 100%);opacity:.72;animation-duration:11s}
 body[data-chapter="3"] .chapter-intro .eyebrow{color:#f8d6a0;text-shadow:0 2px 6px #120f17}
 body[data-chapter="3"] .chapter-intro h2{text-shadow:0 3px 0 #3f2d26,0 6px 18px #100d14}
+body[data-chapter="3"] .chapter-intro p{text-shadow:0 2px 8px rgba(24,12,8,.7),0 0 24px rgba(255,148,83,.12)}
 body[data-chapter="3"] .chapter-intro small{background:#2f222ccf;color:#efd7b0}
 body[data-chapter="4"] .chapter-intro{
 	background:
@@ -32,6 +34,7 @@ body[data-chapter="4"] .chapter-intro{
 body[data-chapter="4"] .chapter-intro::before{background:radial-gradient(42% 30% at 14% 16%,#b4fff155 0%,#0000 72%),radial-gradient(40% 28% at 82% 22%,#8fd8ff44 0%,#0000 72%),linear-gradient(180deg,#0d234259 0%,#0000 40%,#0d2b4763 100%);opacity:.7;animation-duration:16s}
 body[data-chapter="4"] .chapter-intro .eyebrow{color:#d6f4ff;text-shadow:0 2px 6px #0d2338}
 body[data-chapter="4"] .chapter-intro h2{text-shadow:0 3px 0 #1a5073,0 7px 20px #0b2135}
+body[data-chapter="4"] .chapter-intro p{text-shadow:0 2px 8px rgba(11,32,52,.75),0 0 22px rgba(118,225,255,.12)}
 body[data-chapter="4"] .chapter-intro small{background:#17344bcf;color:#d7f2ff}
 body[data-chapter="2"] .cartridge{border-color:#2d4150;box-shadow:0 0 0 1px #7b8b90,0 15px 35px #1a384025}
 body[data-chapter="2"] .console-bar{background:#243b49;border-top-color:#a3c0c744}

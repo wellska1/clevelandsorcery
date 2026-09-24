@@ -5,6 +5,8 @@ class AdventureScore {
   static tracks = {
     forest:{name:'Greenwood · A Brave Little Journey',bpm:96,key:48,scale:[0,2,4,5,7,9,11],roots:[0,5,3,4,2,5,3,4]},
     ship:{name:'The Iron Serpent · Behind Enemy Lines',bpm:124,key:45,scale:[0,2,3,5,7,8,10],roots:[0,0,5,3,0,5,3,4]},
+    burrow:{name:'Burrow Bastion · Beneath Greenwood',bpm:108,key:43,scale:[0,2,3,5,7,8,10],roots:[0,4,5,2,0,4,5,2]},
+    north:{name:'The North Pole Accord · Frozen Signal',bpm:118,key:41,scale:[0,2,4,5,7,9,11],roots:[0,7,5,2,0,7,5,2]},
     battle:{name:'Stand Together!',bpm:152,key:50,scale:[0,2,3,5,7,8,10],roots:[0,0,5,3,0,2,5,4]},
     boss:{name:'Against All Odds',bpm:168,key:50,scale:[0,2,3,5,7,8,10],roots:[0,5,3,4,0,2,5,4]},
     victory:{name:'A Small Hero’s Victory',bpm:132,key:50,scale:[0,2,4,5,7,9,11],roots:[0,3,4,0]},
@@ -92,8 +94,11 @@ class AdventureScore {
   desired(){
     const s=this.getScene();
     if(s.mode==='defeat')return 'rest';
-    if(s.mode==='battle')return ['scales','b2captain'].includes(s.enemy)?'boss':'battle';
-    return s.chapter===2?'ship':'forest';
+    if(s.mode==='battle')return ['scales','b2captain','scalesdeep','cobrisking','polarcaptain'].includes(s.enemy)?'boss':'battle';
+    if(s.chapter===2)return 'ship';
+    if(s.chapter===3)return 'burrow';
+    if(s.chapter===4)return 'north';
+    return 'forest';
   }
   tick(){
     if(this.ctx.state!=='running')return;
@@ -113,6 +118,8 @@ class AdventureScore {
   schedule(step,time,tr){
     const combat=this.track==='battle'||this.track==='boss',win=this.track==='victory',rest=this.track==='rest';
     const ship=this.track==='ship';
+    const chapterAccent=this.track==='burrow'?-2:this.track==='north'?-4:0;
+    const chapterVictory=this.track==='burrow'?1:this.track==='north'?2:0;
     const bar=Math.floor(step/8)%32,pos=step%8,section=Math.floor(bar/8),cycle=Math.floor(step/256),beat=60/tr.bpm;
     this.cycles=cycle;
     let root=tr.roots[bar%tr.roots.length];
@@ -149,6 +156,7 @@ class AdventureScore {
       this.drum('hat',time,pos%2?.7:1);
       if(bar%8===7&&pos>=6){this.drum('snare',time+beat/4,.4);this.voice(midi(4+pos%3),time+beat/4,beat*.18,.019,'pulse')}
       if(this.track==='boss'&&pos%2===1)this.voice(midi(pos===7?1:0)-12,time,beat*.24,.035,'pulse');
+      if(chapterAccent!==0 && (pos===1||pos===5))this.voice(midi(2)+chapterAccent,time,beat*.18,.016,'triangle');
     }else if(ship){
       // A measured military march, with a sparse middle section and an escalating finale.
       if(pos===0||pos===4)this.drum('kick',time,section===2?.45:.75);
@@ -159,6 +167,10 @@ class AdventureScore {
     }else if(!rest&&!win&&section!==2){
       if(pos===0)this.drum('kick',time,.32);
       if(pos===2||pos===6)this.drum('hat',time,.6);
+    }
+    if(win && chapterVictory!==0 && (pos===0||pos===4)){
+      this.voice(midi(0)+chapterVictory,time,beat*.28,.028,'triangle');
+      this.voice(midi(2)+chapterVictory+12,time,beat*.22,.018,'pulse');
     }
   }
   cueVictory(){
