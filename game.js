@@ -430,8 +430,16 @@ $('chapter3-btn').onclick=()=>Underdeep.start(true);
 $('chapter4-btn').onclick=()=>NorthPole.start(true);
 document.querySelectorAll('[data-action]').forEach(b=>b.onclick=()=>action(b.dataset.action));
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>bookTab(b.dataset.tab));
-document.querySelectorAll('[data-dir]').forEach(b=>{b.onpointerdown=e=>{e.preventDefault();b.setPointerCapture(e.pointerId);keys[b.dataset.dir]=true};b.onpointerup=b.onpointercancel=b.onlostpointercapture=()=>keys[b.dataset.dir]=false});
+function releaseTouchDirections(){['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].forEach(k=>keys[k]=false);document.querySelectorAll('[data-dir]').forEach(btn=>btn.classList.remove('is-pressed'))}
+document.querySelectorAll('[data-dir]').forEach(b=>{
+ const dir=b.dataset.dir;
+ const press=e=>{if(e)e.preventDefault();keys[dir]=true;b.classList.add('is-pressed')};
+ const release=e=>{if(e)e.preventDefault();keys[dir]=false;b.classList.remove('is-pressed');b.blur()};
+ b.onpointerdown=press;b.onpointerup=release;b.onpointercancel=release;b.onpointerleave=release;b.onlostpointercapture=release;
+ b.ontouchstart=press;b.ontouchend=release;b.ontouchcancel=release;
+});
 window.addEventListener('keydown',keydown);window.addEventListener('keyup',e=>keys[e.code]=false);window.addEventListener('blur',()=>Object.keys(keys).forEach(k=>keys[k]=false));
+window.addEventListener('visibilitychange',()=>{if(document.hidden)releaseTouchDirections()});
 $('modal-backdrop').onclick=e=>{if(e.target===$('modal-backdrop'))closeModal()};
 function resizeCanvasToStage(){
  const r=$('stage').getBoundingClientRect();
