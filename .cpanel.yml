@@ -1,5 +1,0 @@
----
-deployment:
-  tasks:
-      - export DEPLOYPATH=/home/kylewells/public_html/
-      - /bin/cp -R /home/kylewells/repositories/clevelandsorcery/_site/* $DEPLOYPATH
